@@ -28,7 +28,7 @@ class BackBar extends StatelessWidget {
       pinned: true,
       expandedHeight: 150,
       flexibleSpace: LayoutBuilder(
-        builder: (BuildContext ctx, BoxConstraints constraints) {
+        builder: (ctx, constraints) {
           final double max = 150 + MediaQuery.of(ctx).padding.top;
           final double min = kToolbarHeight + MediaQuery.of(ctx).padding.top;
 
@@ -51,4 +51,3 @@ class BackBar extends StatelessWidget {
     );
   }
 }
-
