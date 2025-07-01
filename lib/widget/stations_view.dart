@@ -23,37 +23,35 @@ class StationsView extends ConsumerWidget {
     ref.watch(trainsProvider);
     ref.watch(stationsProvider);
 
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          MainBar(title: 'Stations'),
-          SliverPadding(
-            padding: EdgeInsets.only(top: 4, bottom: 12),
-            sliver: SliverList.builder(
-              itemCount: stations.length,
-              itemBuilder: (context, index) {
-                final station = stations[index];
+    return CustomScrollView(
+      slivers: [
+        MainBar(title: 'Stations'),
+        SliverPadding(
+          padding: EdgeInsets.only(top: 4, bottom: 12),
+          sliver: SliverList.builder(
+            itemCount: stations.length,
+            itemBuilder: (context, index) {
+              final station = stations[index];
 
-                final north =
-                  station.north.train != null
-                    ? ref.read(trainsProvider.notifier).getTrain(station.north.train!)
-                    : null;
+              final north =
+                station.north.train != null
+                  ? ref.read(trainsProvider.notifier).getTrain(station.north.train!)
+                  : null;
 
-                final south =
-                  station.south.train != null
-                    ? ref.read(trainsProvider.notifier).getTrain(station.south.train!)
-                    : null;
+              final south =
+                station.south.train != null
+                  ? ref.read(trainsProvider.notifier).getTrain(station.south.train!)
+                  : null;
 
-                return StationsRow(
-                  station: station,
-                  north: north,
-                  south: south,
-                );
-              },
-            ),
+              return StationsRow(
+                station: station,
+                north: north,
+                south: south,
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

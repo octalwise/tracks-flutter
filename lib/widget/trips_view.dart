@@ -39,78 +39,76 @@ class TripsViewState extends ConsumerState<TripsView> {
 
     ref.watch(tripsProvider);
 
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          MainBar(title: 'Trips'),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsetsGeometry.fromLTRB(16, 4, 16, 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: StationPicker(
-                      label: 'From Station',
-                      selected: ref.watch(tripsProvider).from,
-                      stations: stations,
-                      onSelected: (station) {
-                        ref.read(tripsProvider.notifier).setFrom(station);
-                      },
-                    ),
+    return CustomScrollView(
+      slivers: [
+        MainBar(title: 'Trips'),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsetsGeometry.fromLTRB(16, 4, 16, 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: StationPicker(
+                    label: 'From Station',
+                    selected: ref.watch(tripsProvider).from,
+                    stations: stations,
+                    onSelected: (station) {
+                      ref.read(tripsProvider.notifier).setFrom(station);
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: IconButton.filledTonal(
-                      icon: const Icon(Icons.swap_horiz_rounded),
-                      onPressed: () {
-                        ref.read(tripsProvider.notifier).swap();
-                      },
-                    )
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: IconButton.filledTonal(
+                    icon: const Icon(Icons.swap_horiz_rounded),
+                    onPressed: () {
+                      ref.read(tripsProvider.notifier).swap();
+                    },
+                  )
+                ),
+                Expanded(
+                  child: StationPicker(
+                    label: 'To Station',
+                    selected: ref.watch(tripsProvider).to,
+                    stations: stations,
+                    onSelected: (station) {
+                      ref.read(tripsProvider.notifier).setTo(station);
+                    },
                   ),
-                  Expanded(
-                    child: StationPicker(
-                      label: 'To Station',
-                      selected: ref.watch(tripsProvider).to,
-                      stations: stations,
-                      onSelected: (station) {
-                        ref.read(tripsProvider.notifier).setTo(station);
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          SliverToBoxAdapter(
-            child: PastCheckbox(
-              label: 'Show Past Trains',
-              value: showPast,
-              onChanged: (value) {
-                setState(() => showPast = value);
-              },
-            ),
+        ),
+        SliverToBoxAdapter(
+          child: PastCheckbox(
+            label: 'Show Past Trains',
+            value: showPast,
+            onChanged: (value) {
+              setState(() => showPast = value);
+            },
           ),
-          SliverPadding(
-            padding: const EdgeInsets.only(bottom: 16),
-            sliver: SliverList.separated(
-              itemCount: stopsTrains.length,
-              itemBuilder: (context, index) {
-                final (from, to, train) = stopsTrains[index];
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.only(bottom: 16),
+          sliver: SliverList.separated(
+            itemCount: stopsTrains.length,
+            itemBuilder: (context, index) {
+              final (from, to, train) = stopsTrains[index];
 
-                return TripRow(
-                  from: from,
-                  to: to,
-                  train: train,
-                  past: from.expected.isBefore(DateTime.now()),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return Divider();
-              },
-            ),
+              return TripRow(
+                from: from,
+                to: to,
+                train: train,
+                past: from.expected.isBefore(DateTime.now()),
+              );
+            },
+            separatorBuilder: (context, index) {
+              return Divider();
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
