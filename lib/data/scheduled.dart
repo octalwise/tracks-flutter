@@ -84,7 +84,6 @@ class Scheduled {
 
           final train = int.parse(timepoint.attributes['data-trip-id']!);
 
-          // TODO: mess with timezones
           final formatter = DateFormat('h:mma');
           final time = formatter.parseStrict(timepoint.text.toUpperCase());
 

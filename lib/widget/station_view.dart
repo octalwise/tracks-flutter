@@ -96,6 +96,9 @@ class StationViewState extends ConsumerState<StationView> {
                       );
                     },
                     style: ButtonStyle(
+                      foregroundColor: WidgetStateProperty.all(
+                        Theme.of(context).colorScheme.onSurface,
+                      ),
                       backgroundColor: WidgetStateProperty.all(background),
                       padding: WidgetStateProperty.all(
                         const EdgeInsets.symmetric(horizontal: 20),

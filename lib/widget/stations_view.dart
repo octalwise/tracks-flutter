@@ -122,7 +122,7 @@ class TrainIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var (foreground, background) = train.routeColor(context);
+    final (foreground, background) = train.routeColor(context);
 
     return Expanded(
       flex: 5,

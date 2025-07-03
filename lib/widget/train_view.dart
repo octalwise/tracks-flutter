@@ -32,9 +32,9 @@ class TrainViewState extends ConsumerState<TrainView> {
             return !stop.expected.isBefore(DateTime.now());
           }).toList();
 
-    final (foreground, background) = train.routeColor(context);
-
     ref.watch(trainsProvider);
+
+    final (foreground, background) = train.routeColor(context);
 
     return Scaffold(
       body: CustomScrollView(
