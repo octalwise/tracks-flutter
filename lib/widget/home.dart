@@ -18,23 +18,25 @@ class Home extends ConsumerWidget {
     );
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-    return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) {
+    return FutureBuilder(
+      future: DynamicColorPlugin.getCorePalette(),
+      builder: (context, snapshot) {
+        final color = snapshot.data?.primary.get(40);
+        final seed = Color(color ?? 0xff6750a4);
+
         return MaterialApp(
           themeMode: ThemeMode.system,
           theme: ThemeData(
             brightness: Brightness.light,
-            colorScheme: lightDynamic,
-
-            navigationBarTheme: NavigationBarThemeData(
-              surfaceTintColor: lightDynamic?.surfaceTint,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: seed,
+              brightness: Brightness.light,
             ),
             pageTransitionsTheme: const PageTransitionsTheme(
               builders: {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
               },
             ),
-
             dividerTheme: DividerThemeData(
               color: Theme.of(context).dividerColor.withValues(alpha: 0.25),
             ),
@@ -50,17 +52,15 @@ class Home extends ConsumerWidget {
           ),
           darkTheme: ThemeData(
             brightness: Brightness.dark,
-            colorScheme: darkDynamic,
-
-            navigationBarTheme: NavigationBarThemeData(
-              surfaceTintColor: darkDynamic?.surfaceTint,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: seed,
+              brightness: Brightness.dark,
             ),
             pageTransitionsTheme: const PageTransitionsTheme(
               builders: {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
               },
             ),
-
             dividerTheme: DividerThemeData(
               color: Theme.of(context).dividerColor.withValues(alpha: 0.25),
             ),
@@ -74,7 +74,6 @@ class Home extends ConsumerWidget {
               ),
             ),
           ),
-
           home: ContentView(),
         );
       },
