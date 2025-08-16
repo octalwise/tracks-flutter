@@ -19,7 +19,7 @@ class TrainView extends ConsumerStatefulWidget {
 }
 
 class TrainViewState extends ConsumerState<TrainView> {
-  bool showPast = false;
+  var showPast = false;
 
   @override
   Widget build(BuildContext context) {

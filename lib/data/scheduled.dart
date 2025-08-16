@@ -69,9 +69,7 @@ class Scheduled {
         final local = fullRoute == 'Local Weekday' || fullRoute == 'Local Weekend';
         final route = local ? 'Local' : fullRoute;
 
-        trains.add(
-          ScheduledTrain(id: train, direction: direction, route: route),
-        );
+        trains.add(ScheduledTrain(id: train, direction: direction, route: route));
       }
 
       for (final row in table.querySelectorAll('tr[data-stop-id]')) {
@@ -87,9 +85,7 @@ class Scheduled {
           final formatter = DateFormat('h:mma');
           final time = formatter.parseStrict(timepoint.text.toUpperCase());
 
-          stops.add(
-            ScheduledStop(station: stop, time: time, train: train),
-          );
+          stops.add(ScheduledStop(station: stop, time: time, train: train));
         }
       }
     }

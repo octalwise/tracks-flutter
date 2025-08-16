@@ -19,8 +19,8 @@ class StationView extends ConsumerStatefulWidget {
 }
 
 class StationViewState extends ConsumerState<StationView> {
-  String direction = 'N';
-  bool showPast = false;
+  var direction = 'N';
+  var showPast = false;
 
   @override
   Widget build(BuildContext context) {

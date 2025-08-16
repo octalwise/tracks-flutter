@@ -23,7 +23,7 @@ class ContentView extends ConsumerStatefulWidget {
 
 class ContentViewState extends ConsumerState<ContentView> {
   late Scheduled scheduled;
-  int currentTab = 1;
+  var currentTab = 1;
 
   Future fetch({bool? init}) async {
     if (init == true) {

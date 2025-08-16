@@ -22,7 +22,7 @@ class TripsView extends ConsumerStatefulWidget {
 }
 
 class TripsViewState extends ConsumerState<TripsView> {
-  bool showPast = false;
+  var showPast = false;
 
   @override
   Widget build(BuildContext context) {
