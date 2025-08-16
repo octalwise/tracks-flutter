@@ -133,7 +133,10 @@ class StationPicker extends StatelessWidget {
     );
 
     controller = ScrollController(
-      initialScrollOffset: (index - 3.5).clamp(0, stations.length - 9) * 52,
+      initialScrollOffset:
+        stations.length > 9
+          ? (index - 3.5).clamp(0, stations.length - 9) * 52
+          : 0,
     );
   }
 

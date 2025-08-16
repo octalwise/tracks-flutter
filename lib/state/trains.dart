@@ -18,21 +18,25 @@ class Trains extends _$Trains {
   List<Train> build() => [];
 
   Future fetch(List<Train> scheduled) async {
-    final url = Uri.https('tracks-api.octalwise.com', '/trains');
-    final token = const String.fromEnvironment('API_KEY');
+    try {
+      final url = Uri.https('tracks-api.octalwise.com', '/trains');
+      final token = const String.fromEnvironment('API_KEY');
 
-    final res = await http.get(url, headers: {'Authorization': token});
-    final dyn = json.decode(res.body);
+      final res = await http.get(url, headers: {'Authorization': token});
+      final dyn = json.decode(res.body);
 
-    final trains = List<Train>.from(dyn.map((data) => Train.fromJson(data)));
-    final ids = trains.map((train) => train.id);
+      final trains = List<Train>.from(dyn.map((data) => Train.fromJson(data)));
+      final ids = trains.map((train) => train.id);
 
-    state = [
-      ...scheduled.where((train) => !ids.contains(train.id)).toList(),
-      ...trains,
-    ];
+      state = [
+        ...scheduled.where((train) => !ids.contains(train.id)).toList(),
+        ...trains,
+      ];
+    } catch (e) {
+      state = scheduled;
+    }
 
-    ref.read(stationsProvider.notifier).fetch(trains);
+    ref.read(stationsProvider.notifier).fetch(state);
   }
 
   Train getTrain(int trainID) {
