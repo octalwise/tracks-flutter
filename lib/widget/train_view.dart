@@ -22,6 +22,22 @@ class TrainViewState extends ConsumerState<TrainView> {
   var showPast = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    final train = ref.read(trainsProvider.notifier).getTrain(widget.id);
+
+    final nonPast =
+      train.stops.any((stop) {
+        return !stop.expected.isBefore(DateTime.now());
+      });
+
+    if (!nonPast) {
+      showPast = true;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final train = ref.read(trainsProvider.notifier).getTrain(widget.id);
 

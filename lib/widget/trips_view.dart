@@ -25,6 +25,23 @@ class TripsViewState extends ConsumerState<TripsView> {
   var showPast = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    final all = ref.read(tripsProvider.notifier).getTrains();
+
+    final nonPast =
+      all.any((stopsTrain) {
+        final (from, _, _) = stopsTrain;
+        return !from.expected.isBefore(DateTime.now());
+      });
+
+    if (!nonPast) {
+      showPast = true;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final stations = ref.watch(stationsProvider);
 

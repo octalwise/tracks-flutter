@@ -23,6 +23,24 @@ class StationViewState extends ConsumerState<StationView> {
   var showPast = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    final station = ref.read(stationsProvider.notifier).getStation(widget.id);
+    final all = ref.read(trainsProvider.notifier).forStation(station, direction);
+
+    final nonPast =
+      all.any((stopTrain) {
+        final (stop, _) = stopTrain;
+        return !stop.expected.isBefore(DateTime.now());
+      });
+
+    if (!nonPast) {
+      showPast = true;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final station = ref.read(stationsProvider.notifier).getStation(widget.id);
 
