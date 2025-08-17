@@ -177,6 +177,7 @@ class StationPicker extends StatelessWidget {
         final chosen = await showModalBottomSheet<BothStations>(
           context: context,
           clipBehavior: Clip.antiAlias,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           builder: (context) {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 8),
