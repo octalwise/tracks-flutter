@@ -132,13 +132,10 @@ class Scheduled {
         final min = trainStops.first.time;
         final max = trainStops.last.time;
 
-        var location = null;
-
-        if (min.isBefore(now) && max.isAfter(now)) {
-          final stop = trainStops.firstWhere((stop) => stop.time.isBefore(now));
-
-          location = stop.station;
-        }
+        final location =
+          min.isBefore(now) && max.isAfter(now)
+            ? trainStops.lastWhere((stop) => stop.time.isBefore(now)).station
+            : null;
 
         return Train(
           id: train.id,
