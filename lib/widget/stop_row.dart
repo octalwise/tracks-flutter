@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:intl/intl.dart';
+import 'package:tracks/widget/utils.dart';
 
 class StopRow extends StatelessWidget {
   final Widget button;
@@ -55,7 +55,7 @@ class StopRow extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  DateFormat('h:mm a').format(time),
+                  formatTime(context, time),
                   style: const TextStyle(fontSize: 18),
                 ),
               ),

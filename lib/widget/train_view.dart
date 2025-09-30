@@ -59,7 +59,7 @@ class TrainViewState extends ConsumerState<TrainView> {
           SliverToBoxAdapter(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
+              textBaseline: TextBaseline.alphabetic,
               children: [
                 PastCheckbox(
                   label: 'Show Past Stops',

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:tracks/state/trips.dart';
 import 'package:tracks/state/stations.dart';
 
+import 'package:tracks/widget/utils.dart';
 import 'package:tracks/widget/app_bar.dart';
 import 'package:tracks/widget/train_view.dart';
 import 'package:tracks/widget/past_checkbox.dart';
@@ -307,7 +308,7 @@ class TripRow extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  DateFormat('h:mm a').format(from.expected),
+                  formatTime(context, from.expected),
                   style: const TextStyle(fontSize: 17),
                 ),
               ),
@@ -317,7 +318,7 @@ class TripRow extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  DateFormat('h:mm a').format(to.expected),
+                  formatTime(context, to.expected),
                   style: const TextStyle(fontSize: 17),
                 ),
               ),
