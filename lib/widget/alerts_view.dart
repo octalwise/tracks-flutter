@@ -26,7 +26,10 @@ class AlertsView extends ConsumerWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(right: 12),
-                    child: Icon(Icons.info_rounded),
+                    child: Icon(
+                      Icons.info_rounded,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                   Expanded(
                     child: Text(
