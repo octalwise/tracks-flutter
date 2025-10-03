@@ -23,10 +23,13 @@ class ContentView extends ConsumerStatefulWidget {
 
 class ContentViewState extends ConsumerState<ContentView> {
   late Scheduled scheduled;
+  DateTime? lastUpdate = null;
+
   var currentTab = 1;
 
   Future fetch({bool? init}) async {
     if (init == true) {
+      await ref.read(stationsProvider.notifier).fetch([]);
       scheduled = await Scheduled.create();
     }
 
@@ -52,8 +55,24 @@ class ContentViewState extends ConsumerState<ContentView> {
       (t) => ref.read(alertsProvider.notifier).fetch(),
     );
     Timer.periodic(
-      Duration(hours: 24),
-      (t) => fetch(init: true),
+      Duration(seconds: 60),
+      (t) {
+        final now = DateTime.now();
+
+        if (
+          lastUpdate != null &&
+          now.year == lastUpdate!.year &&
+          now.month == lastUpdate!.month &&
+          now.day == lastUpdate!.day
+        ) {
+          return;
+        }
+
+        if (now.hour == 5 && now.minute == 1) {
+          fetch(init: true);
+          lastUpdate = now;
+        }
+      },
     );
   }
 

@@ -16,7 +16,7 @@ class Stations extends _$Stations {
   @override
   List<BothStations> build() => [];
 
-  void fetch(List<Train> trains) async {
+  Future fetch(List<Train> trains) async {
     final data = await rootBundle.loadString('assets/stations.json');
 
     final List<dynamic> dyn = json.decode(data);
