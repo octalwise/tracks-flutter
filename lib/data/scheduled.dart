@@ -6,6 +6,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 import 'package:tracks/data/train.dart';
 import 'package:tracks/data/stop.dart';
+import 'package:tracks/data/holidays.dart';
 
 class ScheduledTrain {
   final int id;
@@ -35,9 +36,9 @@ class Scheduled {
   final List<ScheduledTrain> trains;
   final List<ScheduledStop> stops;
 
-  Scheduled._(this.trains, this.stops);
+  const Scheduled._(this.trains, this.stops);
 
-  static Future<Scheduled> create() async {
+  static Future<Scheduled> create(Holidays holidays) async {
     final res = await http.get(Uri.https('www.caltrain.com'));
     final data = res.body;
     final doc = html.parse(data);
@@ -51,7 +52,8 @@ class Scheduled {
       shifted.weekday == DateTime.saturday
         || shifted.weekday == DateTime.sunday;
 
-    final dayType = weekend ? 'weekend' : 'weekday';
+    final dayType =
+        (weekend || holidays.isHoliday(shifted)) ? 'weekend' : 'weekday';
 
     final trains = <ScheduledTrain>[];
     final stops = <ScheduledStop>[];
@@ -108,12 +110,12 @@ class Scheduled {
         stop.time.microsecond,
       );
 
-      if (now.hour >= 4 && stop.time.hour < 4) {
-        time = time.add(const Duration(days: 1));
-      }
-
       if (now.hour <= 4 && stop.time.hour >= 4) {
         time = time.subtract(const Duration(days: 1));
+      }
+
+      if (now.hour >= 4 && stop.time.hour < 4) {
+        time = time.add(const Duration(days: 1));
       }
 
       return ScheduledStop(

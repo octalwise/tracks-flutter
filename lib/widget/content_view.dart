@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import 'package:tracks/data/scheduled.dart';
+import 'package:tracks/data/holidays.dart';
 
 import 'package:tracks/widget/stations_view.dart';
 import 'package:tracks/widget/trips_view.dart';
@@ -23,14 +24,20 @@ class ContentView extends ConsumerStatefulWidget {
 
 class ContentViewState extends ConsumerState<ContentView> {
   late Scheduled scheduled;
+  Holidays? holidays;
+
   DateTime? lastUpdate = null;
 
   var currentTab = 1;
 
   Future fetch({bool? init}) async {
     if (init == true) {
+      if (holidays == null) {
+        holidays = await Holidays.create();
+      }
+
       await ref.read(stationsProvider.notifier).fetch([]);
-      scheduled = await Scheduled.create();
+      scheduled = await Scheduled.create(holidays!);
     }
 
     final trains = await scheduled.fetch();
