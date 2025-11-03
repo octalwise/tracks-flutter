@@ -75,7 +75,7 @@ class ContentViewState extends ConsumerState<ContentView> {
           return;
         }
 
-        if (now.hour == 5 && now.minute == 1) {
+        if (now.hour > 5 || (now.hour == 5 && now.minute > 0)) {
           fetch(init: true);
           lastUpdate = now;
         }
