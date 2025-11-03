@@ -1,7 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:intl/intl.dart';
 
 import 'package:tracks/state/trips.dart';
 import 'package:tracks/state/stations.dart';
@@ -24,6 +23,7 @@ class TripsView extends ConsumerStatefulWidget {
 
 class TripsViewState extends ConsumerState<TripsView> {
   var showPast = false;
+  Timer? refresh;
 
   @override
   void initState() {
@@ -40,6 +40,19 @@ class TripsViewState extends ConsumerState<TripsView> {
     if (!nonPast) {
       showPast = true;
     }
+
+    refresh = Timer.periodic(
+      const Duration(minutes: 1),
+      (_) {
+        if (mounted) setState(() {});
+      }
+    );
+  }
+
+  @override
+  void dispose() {
+    refresh?.cancel();
+    super.dispose();
   }
 
   @override

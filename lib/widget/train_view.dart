@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,6 +21,7 @@ class TrainView extends ConsumerStatefulWidget {
 
 class TrainViewState extends ConsumerState<TrainView> {
   var showPast = false;
+  Timer? refresh;
 
   @override
   void initState() {
@@ -35,6 +37,19 @@ class TrainViewState extends ConsumerState<TrainView> {
     if (!nonPast) {
       showPast = true;
     }
+
+    refresh = Timer.periodic(
+      const Duration(minutes: 1),
+      (_) {
+        if (mounted) setState(() {});
+      }
+    );
+  }
+
+  @override
+  void dispose() {
+    refresh?.cancel();
+    super.dispose();
   }
 
   @override
