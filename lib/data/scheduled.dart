@@ -46,14 +46,13 @@ class Scheduled {
     final la = tz.getLocation('America/Los_Angeles');
     final now = tz.TZDateTime.now(la);
 
-    final shifted = now.subtract(const Duration(hours: 5));
+    final shifted = now.subtract(const Duration(hours: 3));
 
     final weekend =
-      shifted.weekday == DateTime.saturday
-        || shifted.weekday == DateTime.sunday;
+      shifted.weekday == DateTime.saturday || shifted.weekday == DateTime.sunday;
 
     final dayType =
-        (weekend || holidays.isHoliday(shifted)) ? 'weekend' : 'weekday';
+      (weekend || holidays.isHoliday(shifted)) ? 'weekend' : 'weekday';
 
     final trains = <ScheduledTrain>[];
     final stops = <ScheduledStop>[];
@@ -110,11 +109,11 @@ class Scheduled {
         stop.time.microsecond,
       );
 
-      if (now.hour <= 4 && stop.time.hour >= 4) {
-        time = time.subtract(const Duration(days: 1));
-      }
+      final cutoff = 3;
 
-      if (now.hour >= 4 && stop.time.hour < 4) {
+      if (now.hour < cutoff && stop.time.hour >= cutoff) {
+        time = time.subtract(const Duration(days: 1));
+      } else if (now.hour >= cutoff && stop.time.hour < cutoff) {
         time = time.add(const Duration(days: 1));
       }
 
