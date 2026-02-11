@@ -41,8 +41,8 @@ class BackBar extends StatelessWidget {
           return FlexibleSpaceBar(
             title: Text(title),
             titlePadding: EdgeInsets.only(
-              left:   16 + (56 - 16) * x,
-              right:  16 + (56 - 16) * x,
+              left: 16 + (56 - 16) * x,
+              right: 16 + (56 - 16) * x,
               bottom: 14 + (14 - 14) * x,
             ),
           );

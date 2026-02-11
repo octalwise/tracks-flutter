@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html;
 
@@ -22,7 +24,7 @@ class Holidays {
     final url = Uri.https('www.caltrain.com', '/schedules/holiday-service-schedules');
     final res = await http.get(url);
 
-    final data = res.body;
+    final data = utf8.decode(res.bodyBytes, allowMalformed: true);
     final doc = html.parse(data);
 
     final holidays = <Holiday>[];

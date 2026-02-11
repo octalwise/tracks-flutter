@@ -1,13 +1,12 @@
-import 'dart:convert';
-import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:collection/collection.dart';
 
 import 'package:tracks/data/station.dart';
-import 'package:tracks/data/train.dart';
-import 'package:tracks/data/both_stations.dart';
 import 'package:tracks/data/station_info.dart';
+import 'package:tracks/data/stations_data.dart';
+import 'package:tracks/data/both_stations.dart';
+import 'package:tracks/data/train.dart';
 
 part 'stations.g.dart';
 
@@ -17,12 +16,7 @@ class Stations extends _$Stations {
   List<BothStations> build() => [];
 
   Future fetch(List<Train> trains) async {
-    final data = await rootBundle.loadString('assets/stations.json');
-
-    final List<dynamic> dyn = json.decode(data);
-    final infos = dyn.map((data) => StationInfo.fromJson(data)).toList();
-
-    final stations = infos.map((station) {
+    state = stations.map((station) {
       return BothStations(
         name: station.name,
         north: Station(
@@ -39,8 +33,6 @@ class Stations extends _$Stations {
         ),
       );
     }).toList();
-
-    state = stations;
   }
 
   BothStations getStation(int stationID) {

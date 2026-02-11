@@ -24,7 +24,7 @@ class Trips extends _$Trips {
   TripsState build() {
     return TripsState(
       from: BothStations(name: 'Palo Alto', north: Station(id: 70171), south: Station(id: 70172)),
-      to:   BothStations(name: 'San Mateo', north: Station(id: 70091), south: Station(id: 70092)),
+      to: BothStations(name: 'San Mateo', north: Station(id: 70091), south: Station(id: 70092)),
     );
   }
 
