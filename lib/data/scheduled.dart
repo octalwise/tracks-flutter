@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html;
 
@@ -44,7 +45,15 @@ class Scheduled {
   const Scheduled._(this.trains, this.stops);
 
   static Future<Scheduled> create(Holidays holidays) async {
-    final res = await http.get(Uri.https('www.caltrain.com'));
+    http.Response res;
+
+    if (kIsWeb) {
+      final url = Uri.https('tracks-api.octalwise.com', '/caltrain/index');
+      final token = const String.fromEnvironment('API_KEY');
+      res = await http.get(url, headers: {'Authorization': token});
+    } else {
+      res = await http.get(Uri.https('www.caltrain.com'));
+    }
 
     final data = utf8.decode(res.bodyBytes, allowMalformed: true);
     final doc = html.parse(data);

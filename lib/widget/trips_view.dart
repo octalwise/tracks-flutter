@@ -283,11 +283,7 @@ class TripRow extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: FilledButton.tonal(
                   onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => TrainView(id: train.id),
-                      ),
-                    );
+                    pushView(context, TrainView(id: train.id));
                   },
                   style: ButtonStyle(
                     foregroundColor: WidgetStateProperty.all(

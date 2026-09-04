@@ -5,6 +5,7 @@ import 'package:timezone/data/latest.dart' as tz;
 
 import 'package:tracks/data/scheduled.dart';
 import 'package:tracks/data/holidays.dart';
+import 'package:tracks/widget/panes.dart';
 
 import 'package:tracks/widget/stations_view.dart';
 import 'package:tracks/widget/trips_view.dart';
@@ -83,6 +84,12 @@ class ContentViewState extends ConsumerState<ContentView> {
     );
   }
 
+  static const destinations = [
+    (icon: Icon(Icons.map_rounded), label: 'Trips'),
+    (icon: Icon(Icons.home_rounded), label: 'Stations'),
+    (icon: Icon(Icons.warning_rounded), label: 'Alerts'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     ref.watch(trainsProvider);
@@ -90,34 +97,50 @@ class ContentViewState extends ConsumerState<ContentView> {
     ref.watch(alertsProvider);
     ref.watch(tripsProvider);
 
+    final wide = MediaQuery.of(context).size.width >= 700;
+
+    final body = RefreshIndicator(
+      onRefresh: fetch,
+      child: [
+        TripsView(),
+        StationsView(),
+        AlertsView(),
+      ][currentTab],
+    );
+
+    if (wide) {
+      return Scaffold(
+        body: Row(
+          children: [
+            NavigationRail(
+              selectedIndex: currentTab,
+              onDestinationSelected: (index) {
+                setState(() => currentTab = index);
+              },
+              labelType: NavigationRailLabelType.all,
+              destinations:
+                destinations
+                  .map((d) => NavigationRailDestination(icon: d.icon, label: Text(d.label)))
+                  .toList(),
+            ),
+            const VerticalDivider(width: 1),
+            Expanded(child: Panes(root: body, tab: currentTab)),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: fetch,
-        child: [
-          TripsView(),
-          StationsView(),
-          AlertsView(),
-        ][currentTab],
-      ),
+      body: body,
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentTab,
         onDestinationSelected: (index) {
           setState(() => currentTab = index);
         },
-        destinations: const [
-          NavigationDestination(
-            icon: const Icon(Icons.map_rounded),
-            label: 'Trips',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.home_rounded),
-            label: 'Stations',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.warning_rounded),
-            label: 'Alerts',
-          ),
-        ],
+        destinations:
+          destinations
+            .map((d) => NavigationDestination(icon: d.icon, label: d.label))
+            .toList(),
       ),
     );
   }

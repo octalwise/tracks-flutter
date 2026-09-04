@@ -9,6 +9,7 @@ import 'package:tracks/widget/app_bar.dart';
 import 'package:tracks/widget/past_checkbox.dart';
 import 'package:tracks/widget/stop_row.dart';
 import 'package:tracks/widget/station_view.dart';
+import 'package:tracks/widget/utils.dart';
 
 class TrainView extends ConsumerStatefulWidget {
   final int id;
@@ -110,11 +111,7 @@ class TrainViewState extends ConsumerState<TrainView> {
                 return StopRow(
                   button: FilledButton.tonal(
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => StationView(id: station.north.id),
-                        ),
-                      );
+                      pushView(context, StationView(id: station.north.id));
                     },
                     style: ButtonStyle(
                       padding: WidgetStateProperty.all(

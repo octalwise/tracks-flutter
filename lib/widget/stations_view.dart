@@ -12,6 +12,7 @@ import 'package:tracks/state/stations.dart';
 import 'package:tracks/widget/app_bar.dart';
 import 'package:tracks/widget/train_view.dart';
 import 'package:tracks/widget/station_view.dart';
+import 'package:tracks/widget/utils.dart';
 
 class StationsView extends ConsumerStatefulWidget {
   const StationsView({super.key});
@@ -111,11 +112,7 @@ class StationsRow extends StatelessWidget {
             flex: 12,
             child: FilledButton.tonal(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => StationView(id: station.north.id),
-                  ),
-                );
+                pushView(context, StationView(id: station.north.id));
               },
               style: ButtonStyle(
                 padding: WidgetStateProperty.all(
@@ -160,11 +157,7 @@ class TrainIcon extends StatelessWidget {
             backgroundColor: background,
           ),
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => TrainView(id: train.id),
-              ),
-            );
+            pushView(context, TrainView(id: train.id));
           },
         ),
       ),

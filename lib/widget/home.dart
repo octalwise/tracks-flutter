@@ -35,6 +35,7 @@ class Home extends ConsumerWidget {
             pageTransitionsTheme: const PageTransitionsTheme(
               builders: {
                 TargetPlatform.android: SlideBuilder(),
+                TargetPlatform.macOS: SlideBuilder(),
               },
             ),
             dividerTheme: DividerThemeData(
@@ -49,6 +50,7 @@ class Home extends ConsumerWidget {
                 ),
               ),
             ),
+            visualDensity: VisualDensity.standard,
           ),
           darkTheme: ThemeData(
             brightness: Brightness.dark,
@@ -59,6 +61,7 @@ class Home extends ConsumerWidget {
             pageTransitionsTheme: const PageTransitionsTheme(
               builders: {
                 TargetPlatform.android: SlideBuilder(),
+                TargetPlatform.macOS: SlideBuilder(),
               },
             ),
             dividerTheme: DividerThemeData(
@@ -73,6 +76,7 @@ class Home extends ConsumerWidget {
                 ),
               ),
             ),
+            visualDensity: VisualDensity.standard,
           ),
           home: ContentView(),
         );

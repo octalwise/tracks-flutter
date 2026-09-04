@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html;
 
@@ -21,8 +22,16 @@ class Holidays {
   const Holidays._(this.holidays);
 
   static Future<Holidays> create() async {
-    final url = Uri.https('www.caltrain.com', '/schedules/holiday-service-schedules');
-    final res = await http.get(url);
+    http.Response res;
+
+    if (kIsWeb) {
+      final url = Uri.https('tracks-api.octalwise.com', '/caltrain/holiday');
+      final token = const String.fromEnvironment('API_KEY');
+      res = await http.get(url, headers: {'Authorization': token});
+    } else {
+      final url = Uri.https('www.caltrain.com', '/schedules/holiday-service-schedules');
+      res = await http.get(url);
+    }
 
     final data = utf8.decode(res.bodyBytes, allowMalformed: true);
     final doc = html.parse(data);
@@ -46,7 +55,7 @@ class Holidays {
   }
 
   bool isHoliday(DateTime date) {
-    return this.holidays.any((h) {
+    return holidays.any((h) {
       return h.day == date.day && h.month == date.month;
     });
   }

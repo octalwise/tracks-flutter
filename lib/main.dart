@@ -8,5 +8,5 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ensureStations();
 
-  runApp(const ProviderScope(child: const Home()));
+  runApp(const ProviderScope(child: Home()));
 }

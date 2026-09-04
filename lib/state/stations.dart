@@ -3,7 +3,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:collection/collection.dart';
 
 import 'package:tracks/data/station.dart';
-import 'package:tracks/data/station_info.dart';
 import 'package:tracks/data/stations_data.dart';
 import 'package:tracks/data/both_stations.dart';
 import 'package:tracks/data/train.dart';

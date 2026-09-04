@@ -19,10 +19,10 @@ class StationInfo {
   Map<String, dynamic> toJson() => _$StationInfoToJson(this);
 
   bool contains(int id) {
-    return id == this.north || id == this.south;
+    return id == north || id == south;
   }
 
   int side(String direction) {
-    return direction == "N" ? this.north : this.south;
+    return direction == "N" ? north : south;
   }
 }
