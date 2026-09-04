@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MainBar extends StatelessWidget {
   final String title;
 
-  const MainBar({required this.title});
+  const MainBar({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class MainBar extends StatelessWidget {
 class BackBar extends StatelessWidget {
   final String title;
 
-  const BackBar({required this.title});
+  const BackBar({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {

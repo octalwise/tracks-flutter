@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:tracks/data/station_info.dart';
 
-late final Future<List<StationInfo>> fut = loadStations();
+final Future<List<StationInfo>> fut = loadStations();
 List<StationInfo>? cache;
 
 List<StationInfo> get stations => cache!;

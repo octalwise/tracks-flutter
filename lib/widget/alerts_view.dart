@@ -54,6 +54,14 @@ class AlertsView extends ConsumerWidget {
                         ),
                         child: ExpansionTile(
                           title: header,
+                          tilePadding: const EdgeInsets.symmetric(horizontal: 8),
+                          childrenPadding: const EdgeInsets.only(bottom: 8),
+                          collapsedShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           children: [
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -66,21 +74,11 @@ class AlertsView extends ConsumerWidget {
                               ),
                             ),
                           ],
-                          tilePadding: const EdgeInsets.symmetric(horizontal: 8),
-                          childrenPadding: const EdgeInsets.only(bottom: 8),
-                          collapsedShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
                         ),
                       ),
               );
             },
-            separatorBuilder: (context, index) {
-              return Divider(height: 24);
-            },
+            separatorBuilder: (context, index) => const Divider(height: 24),
           ),
         ),
       ],

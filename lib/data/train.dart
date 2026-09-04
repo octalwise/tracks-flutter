@@ -21,7 +21,7 @@ class Train {
     required this.direction,
     required this.route,
     required this.stops,
-    this.location = null,
+    this.location,
   });
 
   factory Train.fromJson(Map<String, dynamic> json) => _$TrainFromJson(json);

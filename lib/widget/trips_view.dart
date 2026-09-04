@@ -134,9 +134,7 @@ class TripsViewState extends ConsumerState<TripsView> {
                 past: from.expected.isBefore(DateTime.now()),
               );
             },
-            separatorBuilder: (context, index) {
-              return Divider();
-            },
+            separatorBuilder: (context, index) => const Divider(),
           ),
         ),
       ],
@@ -154,6 +152,7 @@ class StationPicker extends StatelessWidget {
   late final ScrollController controller;
 
   StationPicker({
+    super.key,
     required this.label,
     required this.selected,
     required this.stations,
@@ -261,6 +260,7 @@ class TripRow extends StatelessWidget {
   final bool past;
 
   const TripRow({
+    super.key,
     required this.train,
     required this.from,
     required this.to,

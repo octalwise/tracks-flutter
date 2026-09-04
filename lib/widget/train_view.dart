@@ -130,9 +130,7 @@ class TrainViewState extends ConsumerState<TrainView> {
                   past: stop.expected.isBefore(DateTime.now()),
                 );
               },
-              separatorBuilder: (context, index) {
-                return Divider();
-              },
+              separatorBuilder: (context, index) => const Divider(),
             ),
           ),
         ],

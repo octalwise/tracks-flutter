@@ -5,7 +5,7 @@ class PastCheckbox extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
 
-  PastCheckbox({
+  const PastCheckbox({
     super.key,
     required this.label,
     required this.value,

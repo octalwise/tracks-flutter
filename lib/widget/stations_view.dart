@@ -90,6 +90,7 @@ class StationsRow extends StatelessWidget {
   final Train? south;
 
   const StationsRow({
+    super.key,
     required this.station,
     required this.north,
     required this.south,
@@ -141,7 +142,7 @@ class StationsRow extends StatelessWidget {
 class TrainIcon extends StatelessWidget {
   final Train train;
 
-  const TrainIcon({required this.train});
+  const TrainIcon({super.key, required this.train});
 
   @override
   Widget build(BuildContext context) {

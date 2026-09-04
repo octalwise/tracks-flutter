@@ -11,6 +11,7 @@ class StopRow extends StatelessWidget {
   final bool past;
 
   const StopRow({
+    super.key,
     required this.button,
     required this.time,
     required this.delay,

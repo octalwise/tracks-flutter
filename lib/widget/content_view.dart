@@ -17,7 +17,7 @@ import 'package:tracks/state/alerts.dart';
 import 'package:tracks/state/trips.dart';
 
 class ContentView extends ConsumerStatefulWidget {
-  ContentView({super.key});
+  const ContentView({super.key});
 
   @override
   ConsumerState<ContentView> createState() => ContentViewState();
@@ -27,15 +27,13 @@ class ContentViewState extends ConsumerState<ContentView> {
   late Scheduled scheduled;
   Holidays? holidays;
 
-  DateTime? lastUpdate = null;
+  DateTime? lastUpdate;
 
   var currentTab = 1;
 
   Future fetch({bool? init}) async {
     if (init == true) {
-      if (holidays == null) {
-        holidays = await Holidays.create();
-      }
+      holidays ??= await Holidays.create();
 
       await ref.read(stationsProvider.notifier).fetch([]);
       scheduled = await Scheduled.create(holidays!);

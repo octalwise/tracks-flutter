@@ -155,9 +155,7 @@ class StationViewState extends ConsumerState<StationView> {
                   past: stop.expected.isBefore(DateTime.now()),
                 );
               },
-              separatorBuilder: (context, index) {
-                return Divider();
-              },
+              separatorBuilder: (context, index) => const Divider(),
             ),
           ),
         ],

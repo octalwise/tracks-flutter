@@ -29,7 +29,7 @@ class Trains extends _$Trains {
       final ids = trains.map((train) => train.id);
 
       state = [
-        ...scheduled.where((train) => !ids.contains(train.id)).toList(),
+        ...scheduled.where((train) => !ids.contains(train.id)),
         ...trains,
       ];
     } catch (e) {

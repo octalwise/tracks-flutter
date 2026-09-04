@@ -48,7 +48,7 @@ class PanesState extends State<Panes> {
       controller: controller,
       scrollDirection: Axis.horizontal,
       itemCount: all.length,
-      separatorBuilder: (_, __) => const VerticalDivider(width: 1),
+      separatorBuilder: (context, index) => const VerticalDivider(width: 1),
       itemBuilder: (context, index) {
         return SizedBox(
           width: 500,
