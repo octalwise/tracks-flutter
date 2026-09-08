@@ -2,33 +2,30 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:collection/collection.dart';
 
+import 'package:tracks/state/trains.dart';
+
 import 'package:tracks/data/station.dart';
 import 'package:tracks/data/stations_data.dart';
 import 'package:tracks/data/both_stations.dart';
-import 'package:tracks/data/train.dart';
 
 part 'stations.g.dart';
 
 @riverpod
 class Stations extends _$Stations {
   @override
-  List<BothStations> build() => [];
+  List<BothStations> build() {
+    final trains = ref.watch(trainsProvider);
 
-  Future fetch(List<Train> trains) async {
-    state = stations.map((station) {
+    return stations.map((station) {
       return BothStations(
         name: station.name,
         north: Station(
           id: station.north,
-          train: trains.firstWhereOrNull(
-            (train) => train.location == station.north,
-          )?.id,
+          train: trains.firstWhereOrNull((t) => t.location == station.north)?.id,
         ),
         south: Station(
           id: station.south,
-          train: trains.firstWhereOrNull(
-            (train) => train.location == station.south,
-          )?.id,
+          train: trains.firstWhereOrNull((t) => t.location == station.south)?.id,
         ),
       );
     }).toList();

@@ -35,8 +35,6 @@ class Trains extends _$Trains {
     } catch (e) {
       state = scheduled;
     }
-
-    ref.read(stationsProvider.notifier).fetch(state);
   }
 
   Train getTrain(int trainID) {

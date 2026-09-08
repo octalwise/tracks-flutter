@@ -34,8 +34,6 @@ class ContentViewState extends ConsumerState<ContentView> {
   Future fetch({bool? init}) async {
     if (init == true) {
       holidays ??= await Holidays.create();
-
-      await ref.read(stationsProvider.notifier).fetch([]);
       scheduled = await Scheduled.create(holidays!);
     }
 
