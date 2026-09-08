@@ -128,6 +128,7 @@ class ContentViewState extends ConsumerState<ContentView> {
         body: Row(
           children: [
             NavigationRail(
+              groupAlignment: 0.0,
               selectedIndex: currentTab,
               onDestinationSelected: (index) {
                 setState(() => currentTab = index);
