@@ -9,7 +9,7 @@ class Alert {
 
   Alert({
     required this.header,
-    this.description = null,
+    this.description,
   });
 
   factory Alert.fromJson(Map<String, dynamic> json) => _$AlertFromJson(json);
