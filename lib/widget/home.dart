@@ -25,6 +25,7 @@ class Home extends ConsumerWidget {
         final seed = Color(color ?? 0xff6750a4);
 
         return MaterialApp(
+          title: 'Tracks',
           themeMode: ThemeMode.system,
           theme: ThemeData(
             brightness: Brightness.light,
