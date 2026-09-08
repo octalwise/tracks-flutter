@@ -5,8 +5,9 @@ import 'package:timezone/data/latest.dart' as tz;
 
 import 'package:tracks/data/scheduled.dart';
 import 'package:tracks/data/holidays.dart';
-import 'package:tracks/widget/panes.dart';
+import 'package:tracks/data/train.dart';
 
+import 'package:tracks/widget/panes.dart';
 import 'package:tracks/widget/stations_view.dart';
 import 'package:tracks/widget/trips_view.dart';
 import 'package:tracks/widget/alerts_view.dart';
@@ -32,13 +33,31 @@ class ContentViewState extends ConsumerState<ContentView> {
   var currentTab = 1;
 
   Future fetch({bool? init}) async {
+    String data;
+
     if (init == true) {
-      holidays ??= await Holidays.create();
-      scheduled = await Scheduled.create(holidays!);
+      final trainsFut = Trains.data();
+      final scheduleFut = Scheduled.data();
+      final holidayFut =
+        holidays == null
+          ? Holidays.create()
+          : Future.value(holidays!);
+
+      final (
+        trainsData,
+        scheduleData,
+        holidaysData,
+      ) = await (trainsFut, scheduleFut, holidayFut).wait;
+
+      data = trainsData;
+      holidays = holidaysData;
+      scheduled = await Scheduled.parse(scheduleData, holidaysData);
+    } else {
+      data = await Trains.data();
     }
 
     final trains = await scheduled.fetch();
-    ref.read(trainsProvider.notifier).fetch(trains);
+    ref.read(trainsProvider.notifier).parse(data, trains);
   }
 
   @override

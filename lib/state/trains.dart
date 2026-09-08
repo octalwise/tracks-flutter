@@ -8,8 +8,6 @@ import 'package:tracks/data/stop.dart';
 import 'package:tracks/data/train.dart';
 import 'package:tracks/data/both_stations.dart';
 
-import 'package:tracks/state/stations.dart';
-
 part 'trains.g.dart';
 
 @riverpod
@@ -17,13 +15,17 @@ class Trains extends _$Trains {
   @override
   List<Train> build() => [];
 
-  Future fetch(List<Train> scheduled) async {
-    try {
-      final url = Uri.https('tracks-api.octalwise.com', '/trains');
-      final token = const String.fromEnvironment('API_KEY');
+  static Future<String> data() async {
+    final url = Uri.https('tracks-api.octalwise.com', '/trains');
+    final token = const String.fromEnvironment('API_KEY');
 
-      final res = await http.get(url, headers: {'Authorization': token});
-      final dyn = json.decode(res.body);
+    final res = await http.get(url, headers: {'Authorization': token});
+    return res.body;
+  }
+
+  Future parse(String data, List<Train> scheduled) async {
+    try {
+      final dyn = json.decode(data);
 
       final trains = List<Train>.from(dyn.map((data) => Train.fromJson(data)));
       final ids = trains.map((train) => train.id);

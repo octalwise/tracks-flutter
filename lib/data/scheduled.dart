@@ -44,7 +44,7 @@ class Scheduled {
 
   const Scheduled._(this.trains, this.stops);
 
-  static Future<Scheduled> create(Holidays holidays) async {
+  static Future<String> data() async {
     http.Response res;
 
     if (kIsWeb) {
@@ -55,7 +55,10 @@ class Scheduled {
       res = await http.get(Uri.https('www.caltrain.com'));
     }
 
-    final data = utf8.decode(res.bodyBytes, allowMalformed: true);
+    return utf8.decode(res.bodyBytes, allowMalformed: true);
+  }
+
+  static Future<Scheduled> parse(String data, Holidays holidays) async {
     final doc = html.parse(data);
 
     final la = tz.getLocation('America/Los_Angeles');
