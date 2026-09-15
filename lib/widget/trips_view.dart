@@ -74,6 +74,7 @@ class TripsViewState extends ConsumerState<TripsView> {
           }).toList();
 
     ref.watch(tripsProvider);
+    ref.watch(trainsProvider);
     ref.watch(serviceProvider);
 
     return CustomScrollView(

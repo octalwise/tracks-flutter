@@ -41,8 +41,6 @@ class Trips extends _$Trips {
   }
 
   List<(Stop, Stop, Train)> getTrains() {
-    ref.watch(trainsProvider);
-
     final trains = ref.read(trainsProvider.notifier).getTrains();
 
     return trains

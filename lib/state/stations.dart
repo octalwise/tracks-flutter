@@ -15,6 +15,7 @@ part 'stations.g.dart';
 class Stations extends _$Stations {
   @override
   List<BothStations> build() {
+    ref.watch(trainsProvider);
     ref.watch(serviceProvider);
 
     final trains = ref.read(trainsProvider.notifier).getTrains();
