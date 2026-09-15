@@ -71,6 +71,8 @@ class ContentViewState extends ConsumerState<ContentView> {
     tz.initializeTimeZones();
 
     fetch(init: true);
+    lastUpdate = tzNow();
+
     ref.read(alertsProvider.notifier).fetch();
 
     Timer.periodic(
@@ -192,10 +194,13 @@ class ContentViewState extends ConsumerState<ContentView> {
             .map((d) => NavigationDestination(icon: d.icon, label: d.label))
             .toList(),
       ),
-      floatingActionButton: AnimatedOpacity(
-        duration: const Duration(milliseconds: 200),
-        opacity: showFAB && currentTab != 2 ? 1 : 0,
-        child: fab,
+      floatingActionButton: IgnorePointer(
+        ignoring: !showFAB,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
+          opacity: showFAB && currentTab != 2 ? 1 : 0,
+          child: fab,
+        ),
       ),
     );
   }

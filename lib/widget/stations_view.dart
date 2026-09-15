@@ -51,6 +51,7 @@ class StationsViewState extends ConsumerState<StationsView> {
     final stations = ref.watch(stationsProvider);
     final altService = ref.read(serviceProvider.notifier).alt();
 
+    ref.watch(trainsProvider);
     ref.watch(serviceProvider);
 
     return CustomScrollView(

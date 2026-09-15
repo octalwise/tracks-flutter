@@ -20,7 +20,7 @@ void pushView(BuildContext context, Widget widget) {
   final view = View.of(context);
   final width = view.physicalSize.width / view.devicePixelRatio;
 
-  if (width > 700) {
+  if (width >= 700) {
     Panes.of(context).push(PaneScope.of(context).index, widget);
   } else {
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => widget));
