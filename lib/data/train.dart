@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:tracks/data/stop.dart';
+import 'package:tracks/state/service.dart';
 
 part 'train.g.dart';
 
@@ -12,6 +13,7 @@ class Train {
   final bool live;
   final String direction;
   final String route;
+  final ServiceType service;
   final int? location;
   final List<Stop> stops;
 
@@ -20,6 +22,7 @@ class Train {
     required this.live,
     required this.direction,
     required this.route,
+    required this.service,
     required this.stops,
     this.location,
   });

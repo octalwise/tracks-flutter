@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tracks/state/service.dart';
 
 import 'package:tracks/state/trains.dart';
 import 'package:tracks/state/stations.dart';
@@ -32,7 +33,7 @@ class TrainViewState extends ConsumerState<TrainView> {
 
     final nonPast =
       train.stops.any((stop) {
-        return !stop.expected.isBefore(DateTime.now());
+        return !stop.expected.isBefore(tzNow());
       });
 
     if (!nonPast) {
@@ -61,10 +62,11 @@ class TrainViewState extends ConsumerState<TrainView> {
       showPast
         ? train.stops
         : train.stops.where((stop) {
-            return !stop.expected.isBefore(DateTime.now());
+            return !stop.expected.isBefore(tzNow());
           }).toList();
 
     ref.watch(trainsProvider);
+    ref.watch(serviceProvider);
 
     final (foreground, background) = train.routeColor(context);
 
@@ -123,11 +125,9 @@ class TrainViewState extends ConsumerState<TrainView> {
                       style: const TextStyle(fontSize: 16),
                     ),
                   ),
-
-                  time:  stop.expected,
+                  time: stop.expected,
                   delay: stop.expected.difference(stop.scheduled).inMinutes,
-
-                  past: stop.expected.isBefore(DateTime.now()),
+                  past: stop.expected.isBefore(tzNow()) || !ref.read(serviceProvider.notifier).realService(train.service),
                 );
               },
               separatorBuilder: (context, index) => const Divider(),

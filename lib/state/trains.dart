@@ -4,6 +4,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:tracks/state/service.dart';
+
 import 'package:tracks/data/stop.dart';
 import 'package:tracks/data/train.dart';
 import 'package:tracks/data/both_stations.dart';
@@ -39,6 +41,10 @@ class Trains extends _$Trains {
     }
   }
 
+  List<Train> getTrains() {
+    return state.where((train) => ref.read(serviceProvider.notifier).isService(train.service)).toList();
+  }
+
   Train getTrain(int trainID) {
     return state.firstWhere((train) => train.id == trainID);
   }
@@ -46,7 +52,7 @@ class Trains extends _$Trains {
   List<(Stop, Train)> forStation(BothStations station, String direction) {
     final stationID = direction == 'N' ? station.north.id : station.south.id;
 
-    return state
+    return getTrains()
       .map((train) => (
         train.stops.firstWhereOrNull(
           (stop) => stop.station == stationID,

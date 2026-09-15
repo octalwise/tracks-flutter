@@ -5,7 +5,7 @@ import 'package:timezone/data/latest.dart' as tz;
 
 import 'package:tracks/data/scheduled.dart';
 import 'package:tracks/data/holidays.dart';
-import 'package:tracks/data/train.dart';
+import 'package:tracks/state/service.dart';
 
 import 'package:tracks/widget/panes.dart';
 import 'package:tracks/widget/stations_view.dart';
@@ -16,6 +16,7 @@ import 'package:tracks/state/trains.dart';
 import 'package:tracks/state/stations.dart';
 import 'package:tracks/state/alerts.dart';
 import 'package:tracks/state/trips.dart';
+import 'package:tracks/widget/utils.dart';
 
 class ContentView extends ConsumerStatefulWidget {
   const ContentView({super.key});
@@ -31,6 +32,7 @@ class ContentViewState extends ConsumerState<ContentView> {
   DateTime? lastUpdate;
 
   var currentTab = 1;
+  var showFAB = true;
 
   Future fetch({bool? init}) async {
     String data;
@@ -52,6 +54,8 @@ class ContentViewState extends ConsumerState<ContentView> {
       data = trainsData;
       holidays = holidaysData;
       scheduled = await Scheduled.parse(scheduleData, holidaysData);
+
+      ref.read(serviceProvider.notifier).load(holidaysData);
     } else {
       data = await Trains.data();
     }
@@ -80,7 +84,7 @@ class ContentViewState extends ConsumerState<ContentView> {
     Timer.periodic(
       Duration(seconds: 60),
       (t) {
-        final now = DateTime.now();
+        final now = tzNow();
 
         if (
           lastUpdate != null &&
@@ -112,16 +116,45 @@ class ContentViewState extends ConsumerState<ContentView> {
     ref.watch(alertsProvider);
     ref.watch(tripsProvider);
 
+    final service = ref.watch(serviceProvider)?.cur;
+
     final wide = MediaQuery.of(context).size.width >= 700;
 
-    final body = RefreshIndicator(
-      onRefresh: fetch,
-      child: [
-        TripsView(),
-        StationsView(),
-        AlertsView(),
-      ][currentTab],
+    final body = NotificationListener<ShowNotification>(
+      onNotification: (n) {
+        if (showFAB != n.show) {
+          setState(() => showFAB = n.show);
+        }
+        return true;
+      },
+      child: RefreshIndicator(
+        onRefresh: fetch,
+        child: [
+          TripsView(),
+          StationsView(),
+          AlertsView(),
+        ][currentTab],
+      ),
     );
+
+    final fab =
+      service != null
+        ? FloatingActionButton.extended(
+          label: Text(
+            service == ServiceType.weekday
+              ? 'Weekday'
+              : 'Weekend',
+          ),
+          icon: Icon(
+            service == ServiceType.weekday
+              ? Icons.calendar_month_rounded
+              : Icons.schedule_rounded,
+          ),
+          onPressed: () {
+            ref.read(serviceProvider.notifier).toggle();
+          },
+        )
+        : null;
 
     if (wide) {
       return Scaffold(
@@ -143,6 +176,7 @@ class ContentViewState extends ConsumerState<ContentView> {
             Expanded(child: Panes(root: body, tab: currentTab)),
           ],
         ),
+        floatingActionButton: fab,
       );
     }
 
@@ -158,6 +192,16 @@ class ContentViewState extends ConsumerState<ContentView> {
             .map((d) => NavigationDestination(icon: d.icon, label: d.label))
             .toList(),
       ),
+      floatingActionButton: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: showFAB && currentTab != 2 ? 1 : 0,
+        child: fab,
+      ),
     );
   }
+}
+
+class ShowNotification extends Notification {
+  final bool show;
+  ShowNotification(this.show);
 }

@@ -7,6 +7,8 @@ import 'package:html/parser.dart' as html;
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+import 'package:tracks/state/service.dart';
+
 import 'package:tracks/data/station_info.dart';
 import 'package:tracks/data/stations_data.dart';
 
@@ -14,15 +16,19 @@ import 'package:tracks/data/train.dart';
 import 'package:tracks/data/stop.dart';
 import 'package:tracks/data/holidays.dart';
 
+import 'package:tracks/widget/utils.dart';
+
 class ScheduledTrain {
   final int id;
   final String direction;
   final String route;
+  final ServiceType service;
 
   const ScheduledTrain({
     required this.id,
     required this.direction,
     required this.route,
+    required this.service,
   });
 }
 
@@ -61,17 +67,6 @@ class Scheduled {
   static Future<Scheduled> parse(String data, Holidays holidays) async {
     final doc = html.parse(data);
 
-    final la = tz.getLocation('America/Los_Angeles');
-    final now = tz.TZDateTime.now(la);
-
-    final shifted = now.subtract(const Duration(hours: 3));
-
-    final weekend =
-      shifted.weekday == DateTime.saturday || shifted.weekday == DateTime.sunday;
-
-    final dayType =
-      (weekend || holidays.isHoliday(shifted)) ? 'weekend' : 'weekday';
-
     final trains = <ScheduledTrain>[];
     final stops = <ScheduledStop>[];
 
@@ -80,15 +75,16 @@ class Scheduled {
           table.parent!.attributes['data-direction'] == 'northbound' ? 'N' : 'S';
 
       for (final header in table.querySelectorAll(
-        'tr:first-child td.schedule-trip-header[data-service-type=$dayType]',
+        'tr:first-child td.schedule-trip-header',
       )) {
         final train = int.parse(header.attributes['data-trip-id']!);
         final fullRoute = header.attributes['data-route-id']!;
+        final service = ServiceType.from(header.attributes['data-service-type']!);
 
         final local = fullRoute == 'Local Weekday' || fullRoute == 'Local Weekend';
         final route = local ? 'Local' : fullRoute;
 
-        trains.add(ScheduledTrain(id: train, direction: direction, route: route));
+        trains.add(ScheduledTrain(id: train, direction: direction, route: route, service: service));
       }
 
       for (final row in table.querySelectorAll('tr[data-stop-id]')) {
@@ -113,10 +109,11 @@ class Scheduled {
   }
 
   Future<List<Train>> fetch() async {
-    final now = DateTime.now();
+    final now = tzNow();
 
     final allStops = stops.map((stop) {
-      var time = DateTime(
+      var time = tz.TZDateTime(
+        tz.getLocation('America/Los_Angeles'),
         now.year,
         now.month,
         now.day,
@@ -154,6 +151,7 @@ class Scheduled {
           live: false,
           direction: train.direction,
           route: train.route,
+          service: train.service,
           location: location,
           stops: List<Stop>.of(
             trainStops.map((stop) {
@@ -170,7 +168,7 @@ class Scheduled {
   }
 
   int? getLocation(String direction, List<ScheduledStop> stops) {
-    final now = DateTime.now();
+    final now = tzNow();
 
     final first = stops.first.time;
     final last = stops.last.time;

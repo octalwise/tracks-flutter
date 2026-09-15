@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class PastCheckbox extends StatelessWidget {
@@ -14,8 +15,10 @@ class PastCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final addl = kIsWeb ? 4.0 : 0.0;
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 0, 8, 14),
+      padding: EdgeInsets.fromLTRB(8 + addl, addl, 8 + addl, 14 + addl),
       child: Row(
         children: [
           Checkbox(

@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tracks/state/service.dart';
 
 import 'package:tracks/state/trips.dart';
 import 'package:tracks/state/stations.dart';
 
-import 'package:tracks/widget/utils.dart';
 import 'package:tracks/widget/app_bar.dart';
 import 'package:tracks/widget/train_view.dart';
 import 'package:tracks/widget/past_checkbox.dart';
+import 'package:tracks/widget/utils.dart';
 
 import 'package:tracks/data/stop.dart';
 import 'package:tracks/data/train.dart';
@@ -25,6 +26,8 @@ class TripsViewState extends ConsumerState<TripsView> {
   var showPast = false;
   Timer? refresh;
 
+  late FABController controller;
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +37,7 @@ class TripsViewState extends ConsumerState<TripsView> {
     final nonPast =
       all.any((stopsTrain) {
         final (from, _, _) = stopsTrain;
-        return !from.expected.isBefore(DateTime.now());
+        return !from.expected.isBefore(tzNow());
       });
 
     if (!nonPast) {
@@ -47,6 +50,8 @@ class TripsViewState extends ConsumerState<TripsView> {
         if (mounted) setState(() {});
       }
     );
+
+    controller = FABController(context);
   }
 
   @override
@@ -65,12 +70,14 @@ class TripsViewState extends ConsumerState<TripsView> {
         ? all
         : all.where((stopsTrain) {
             final (from, _, _) = stopsTrain;
-            return !from.expected.isBefore(DateTime.now());
+            return !from.expected.isBefore(tzNow());
           }).toList();
 
     ref.watch(tripsProvider);
+    ref.watch(serviceProvider);
 
     return CustomScrollView(
+      controller: controller,
       slivers: [
         MainBar(title: 'Trips'),
         SliverToBoxAdapter(
@@ -131,7 +138,7 @@ class TripsViewState extends ConsumerState<TripsView> {
                 from: from,
                 to: to,
                 train: train,
-                past: from.expected.isBefore(DateTime.now()),
+                past: from.expected.isBefore(tzNow()) || !ref.read(serviceProvider.notifier).realService(train.service),
               );
             },
             separatorBuilder: (context, index) => const Divider(),

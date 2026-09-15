@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:collection/collection.dart';
+import 'package:tracks/state/service.dart';
 
 import 'package:tracks/state/trains.dart';
 
@@ -14,7 +15,9 @@ part 'stations.g.dart';
 class Stations extends _$Stations {
   @override
   List<BothStations> build() {
-    final trains = ref.watch(trainsProvider);
+    ref.watch(serviceProvider);
+
+    final trains = ref.read(trainsProvider.notifier).getTrains();
 
     return stations.map((station) {
       return BothStations(

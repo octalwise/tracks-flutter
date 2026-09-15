@@ -1,10 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:collection/collection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:tracks/data/train.dart';
 import 'package:tracks/data/stop.dart';
-import 'package:tracks/data/station.dart';
 import 'package:tracks/data/both_stations.dart';
 
 import 'package:tracks/state/trains.dart';
@@ -22,14 +22,28 @@ class TripsState {
 class Trips extends _$Trips {
   @override
   TripsState build() {
+    SharedPreferences.getInstance().then((prefs) {
+      final from = prefs.getStringList('from');
+      final to = prefs.getStringList('to');
+
+      if (from == null || to == null) return;
+
+      state = TripsState(
+        from: BothStations.compact(from[0], int.parse(from[1]), int.parse(from[2])),
+        to: BothStations.compact(to[0], int.parse(to[1]), int.parse(to[2])),
+      );
+    });
+
     return TripsState(
-      from: BothStations(name: 'Palo Alto', north: Station(id: 70171), south: Station(id: 70172)),
-      to: BothStations(name: 'San Mateo', north: Station(id: 70091), south: Station(id: 70092)),
+      from: BothStations.compact('Palo Alto', 70171, 70172),
+      to: BothStations.compact('San Mateo', 70091, 70092),
     );
   }
 
   List<(Stop, Stop, Train)> getTrains() {
-    final trains = ref.read(trainsProvider);
+    ref.watch(trainsProvider);
+
+    final trains = ref.read(trainsProvider.notifier).getTrains();
 
     return trains
       .map((train) => (
@@ -54,13 +68,23 @@ class Trips extends _$Trips {
 
   void setFrom(BothStations station) {
     state = TripsState(from: station, to: state.to);
+    save();
   }
 
   void setTo(BothStations station) {
     state = TripsState(from: state.from, to: station);
+    save();
   }
 
   void swap() {
     state = TripsState(from: state.to, to: state.from);
+    save();
+  }
+
+  Future save() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setStringList('from', [state.from.name, state.from.north.id.toString(), state.from.south.id.toString()]);
+    prefs.setStringList('to', [state.to.name, state.to.north.id.toString(), state.to.south.id.toString()]);
   }
 }

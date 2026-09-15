@@ -11,6 +11,10 @@ class BothStations {
     required this.south,
   });
 
+  static BothStations compact(String name, int north, int south) {
+    return BothStations(name: name, north: Station(id: north), south: Station(id: south));
+  }
+
   @override
   bool operator ==(Object other) {
     return identical(this, other) || (

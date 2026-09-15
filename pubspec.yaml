@@ -19,6 +19,7 @@ dependencies:
   json_annotation: ^4.9.0
   json_serializable: ^6.8.0
   riverpod_annotation: ^4.0.7
+  shared_preferences: ^2.5.5
   timezone: ^0.11.1
 
 dev_dependencies:

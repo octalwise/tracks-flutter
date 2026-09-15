@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tracks/state/service.dart';
 
 import 'package:tracks/state/trains.dart';
 import 'package:tracks/state/stations.dart';
@@ -36,7 +37,7 @@ class StationViewState extends ConsumerState<StationView> {
     final nonPast =
       all.any((stopTrain) {
         final (stop, _) = stopTrain;
-        return !stop.expected.isBefore(DateTime.now());
+        return !stop.expected.isBefore(tzNow());
       });
 
     if (!nonPast) {
@@ -67,10 +68,11 @@ class StationViewState extends ConsumerState<StationView> {
         ? all
         : all.where((stopTrain) {
             final (stop, _) = stopTrain;
-            return !stop.expected.isBefore(DateTime.now());
+            return !stop.expected.isBefore(tzNow());
           }).toList();
 
     ref.watch(trainsProvider);
+    ref.watch(serviceProvider);
 
     return Scaffold(
       body: CustomScrollView(
@@ -148,11 +150,9 @@ class StationViewState extends ConsumerState<StationView> {
                       ],
                     ),
                   ),
-
-                  time:  stop.expected,
+                  time: stop.expected,
                   delay: stop.expected.difference(stop.scheduled).inMinutes,
-
-                  past: stop.expected.isBefore(DateTime.now()),
+                  past: stop.expected.isBefore(tzNow()) || !ref.read(serviceProvider.notifier).realService(train.service),
                 );
               },
               separatorBuilder: (context, index) => const Divider(),

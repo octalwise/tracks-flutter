@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:tracks/data/train.dart';
-
 import 'package:tracks/data/both_stations.dart';
 
+import 'package:tracks/state/service.dart';
 import 'package:tracks/state/trains.dart';
 import 'package:tracks/state/stations.dart';
 
@@ -24,6 +24,8 @@ class StationsView extends ConsumerStatefulWidget {
 class StationsViewState extends ConsumerState<StationsView> {
   Timer? refresh;
 
+  late FABController controller;
+
   @override
   void initState() {
     super.initState();
@@ -34,6 +36,8 @@ class StationsViewState extends ConsumerState<StationsView> {
         if (mounted) setState(() {});
       }
     );
+
+    controller = FABController(context);
   }
 
   @override
@@ -44,13 +48,13 @@ class StationsViewState extends ConsumerState<StationsView> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(trainsProvider);
     final stations = ref.watch(stationsProvider);
+    final altService = ref.read(serviceProvider.notifier).alt();
 
-    ref.watch(trainsProvider);
-    ref.watch(stationsProvider);
+    ref.watch(serviceProvider);
 
     return CustomScrollView(
+      controller: controller,
       slivers: [
         MainBar(title: 'Stations'),
         SliverPadding(
@@ -74,6 +78,7 @@ class StationsViewState extends ConsumerState<StationsView> {
                 station: station,
                 north: north,
                 south: south,
+                altService: altService,
               );
             },
           ),
@@ -89,11 +94,14 @@ class StationsRow extends StatelessWidget {
   final Train? north;
   final Train? south;
 
+  final bool altService;
+
   const StationsRow({
     super.key,
     required this.station,
     required this.north,
     required this.south,
+    required this.altService,
   });
 
   @override
@@ -102,12 +110,16 @@ class StationsRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
-          south != null
-            ? TrainIcon(train: south!)
-            : Expanded(
-                flex: 5,
-                child: const Icon(Icons.keyboard_arrow_down_rounded, size: 32),
-              ),
+          Expanded(
+            flex: 5,
+            child:
+              south != null
+                ? Opacity(
+                    opacity: altService ? 0.6 : 1.0,
+                    child: TrainIcon(train: south!),
+                  )
+                : const Icon(Icons.keyboard_arrow_down_rounded, size: 32),
+          ),
 
           Expanded(
             flex: 12,
@@ -127,12 +139,16 @@ class StationsRow extends StatelessWidget {
             ),
           ),
 
-          north != null
-            ? TrainIcon(train: north!)
-            : Expanded(
-                flex: 5,
-                child: const Icon(Icons.keyboard_arrow_up_rounded, size: 32),
-              ),
+          Expanded(
+            flex: 5,
+            child:
+              north != null
+                ? Opacity(
+                    opacity: altService ? 0.6 : 1.0,
+                    child: TrainIcon(train: north!),
+                  )
+                : const Icon(Icons.keyboard_arrow_up_rounded, size: 32),
+          ),
         ],
       ),
     );
@@ -148,19 +164,16 @@ class TrainIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final (foreground, background) = train.routeColor(context);
 
-    return Expanded(
-      flex: 5,
-      child: Center(
-        child: IconButton.filled(
-          icon: const Icon(Icons.train_rounded),
-          color: foreground,
-          style: IconButton.styleFrom(
-            backgroundColor: background,
-          ),
-          onPressed: () {
-            pushView(context, TrainView(id: train.id));
-          },
+    return Center(
+      child: IconButton.filled(
+        icon: const Icon(Icons.train_rounded),
+        color: foreground,
+        style: IconButton.styleFrom(
+          backgroundColor: background,
         ),
+        onPressed: () {
+          pushView(context, TrainView(id: train.id));
+        },
       ),
     );
   }
