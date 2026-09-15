@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracks/data/train.dart';
 import 'package:tracks/data/both_stations.dart';
 
-import 'package:tracks/state/service.dart';
 import 'package:tracks/state/trains.dart';
 import 'package:tracks/state/stations.dart';
+import 'package:tracks/state/service.dart';
 
 import 'package:tracks/widget/app_bar.dart';
 import 'package:tracks/widget/train_view.dart';

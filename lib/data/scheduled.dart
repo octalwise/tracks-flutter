@@ -7,14 +7,14 @@ import 'package:html/parser.dart' as html;
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-import 'package:tracks/state/service.dart';
-
 import 'package:tracks/data/station_info.dart';
 import 'package:tracks/data/stations_data.dart';
 
 import 'package:tracks/data/train.dart';
 import 'package:tracks/data/stop.dart';
 import 'package:tracks/data/holidays.dart';
+
+import 'package:tracks/state/service.dart';
 
 import 'package:tracks/widget/utils.dart';
 

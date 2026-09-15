@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tracks/state/service.dart';
 
 import 'package:tracks/state/trains.dart';
 import 'package:tracks/state/stations.dart';
+import 'package:tracks/state/service.dart';
 
 import 'package:tracks/widget/app_bar.dart';
 import 'package:tracks/widget/past_checkbox.dart';

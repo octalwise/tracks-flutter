@@ -5,17 +5,17 @@ import 'package:timezone/data/latest.dart' as tz;
 
 import 'package:tracks/data/scheduled.dart';
 import 'package:tracks/data/holidays.dart';
+
+import 'package:tracks/state/trains.dart';
+import 'package:tracks/state/stations.dart';
+import 'package:tracks/state/alerts.dart';
+import 'package:tracks/state/trips.dart';
 import 'package:tracks/state/service.dart';
 
 import 'package:tracks/widget/panes.dart';
 import 'package:tracks/widget/stations_view.dart';
 import 'package:tracks/widget/trips_view.dart';
 import 'package:tracks/widget/alerts_view.dart';
-
-import 'package:tracks/state/trains.dart';
-import 'package:tracks/state/stations.dart';
-import 'package:tracks/state/alerts.dart';
-import 'package:tracks/state/trips.dart';
 import 'package:tracks/widget/utils.dart';
 
 class ContentView extends ConsumerStatefulWidget {
