@@ -131,11 +131,14 @@ class ContentViewState extends ConsumerState<ContentView> {
       },
       child: RefreshIndicator(
         onRefresh: fetch,
-        child: [
-          TripsView(),
-          StationsView(),
-          AlertsView(),
-        ][currentTab],
+        child: IndexedStack(
+          index: currentTab,
+          children: const [
+            TripsView(),
+            StationsView(),
+            AlertsView(),
+          ],
+        ),
       ),
     );
 

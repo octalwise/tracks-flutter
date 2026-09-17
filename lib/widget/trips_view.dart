@@ -24,7 +24,7 @@ class TripsView extends ConsumerStatefulWidget {
 }
 
 class TripsViewState extends ConsumerState<TripsView> {
-  var showPast = false;
+  bool? forceShow;
   Timer? refresh;
 
   late FABController controller;
@@ -32,18 +32,6 @@ class TripsViewState extends ConsumerState<TripsView> {
   @override
   void initState() {
     super.initState();
-
-    final all = ref.read(tripsProvider.notifier).getTrains();
-
-    final nonPast =
-      all.any((stopsTrain) {
-        final (from, _, _) = stopsTrain;
-        return !from.expected.isBefore(tzNow());
-      });
-
-    if (!nonPast) {
-      showPast = true;
-    }
 
     refresh = Timer.periodic(
       const Duration(minutes: 1),
@@ -63,15 +51,28 @@ class TripsViewState extends ConsumerState<TripsView> {
 
   @override
   Widget build(BuildContext context) {
+    final now = tzNow();
+
     final stations = ref.watch(stationsProvider);
 
     final all = ref.read(tripsProvider.notifier).getTrains();
+    final nonPast =
+      all.any((stopsTrain) {
+        final (from, _, _) = stopsTrain;
+        return !from.expected.isBefore(now);
+      });
+
+    if (forceShow == null && all.isNotEmpty && !nonPast) {
+      forceShow = true;
+    }
+    final showPast = forceShow ?? false;
+
     final stopsTrains =
       showPast
         ? all
         : all.where((stopsTrain) {
             final (from, _, _) = stopsTrain;
-            return !from.expected.isBefore(tzNow());
+            return !from.expected.isBefore(now);
           }).toList();
 
     ref.watch(tripsProvider);
@@ -125,7 +126,7 @@ class TripsViewState extends ConsumerState<TripsView> {
             label: 'Show Past Trains',
             value: showPast,
             onChanged: (value) {
-              setState(() => showPast = value);
+              setState(() => forceShow = value);
             },
           ),
         ),
@@ -140,7 +141,7 @@ class TripsViewState extends ConsumerState<TripsView> {
                 from: from,
                 to: to,
                 train: train,
-                past: from.expected.isBefore(tzNow()) || !ref.read(serviceProvider.notifier).realService(train.service),
+                past: from.expected.isBefore(now) || !ref.read(serviceProvider.notifier).realService(train.service),
               );
             },
             separatorBuilder: (context, index) => const Divider(),

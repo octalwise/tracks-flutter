@@ -1,12 +1,12 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:collection/collection.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:tracks/data/train.dart';
 import 'package:tracks/data/stop.dart';
 import 'package:tracks/data/both_stations.dart';
 
+import 'package:tracks/state/prefs.dart';
 import 'package:tracks/state/trains.dart';
 
 part 'trips.g.dart';
@@ -22,21 +22,21 @@ class TripsState {
 class Trips extends _$Trips {
   @override
   TripsState build() {
-    SharedPreferences.getInstance().then((prefs) {
-      final from = prefs.getStringList('from');
-      final to = prefs.getStringList('to');
+    final prefs = ref.watch(prefsProvider);
 
-      if (from == null || to == null) return;
+    final from = prefs.getStringList('from');
+    final to = prefs.getStringList('to');
 
-      state = TripsState(
-        from: BothStations.compact(from[0], int.parse(from[1]), int.parse(from[2])),
-        to: BothStations.compact(to[0], int.parse(to[1]), int.parse(to[2])),
+    if (from == null || to == null) {
+      return TripsState(
+        from: BothStations.compact('Palo Alto', 70171, 70172),
+        to: BothStations.compact('San Mateo', 70091, 70092),
       );
-    });
+    }
 
     return TripsState(
-      from: BothStations.compact('Palo Alto', 70171, 70172),
-      to: BothStations.compact('San Mateo', 70091, 70092),
+      from: BothStations.compact(from[0], int.parse(from[1]), int.parse(from[2])),
+      to: BothStations.compact(to[0], int.parse(to[1]), int.parse(to[2])),
     );
   }
 
@@ -55,9 +55,7 @@ class Trips extends _$Trips {
       ))
       .where((stopsTrain) {
         final (from, to, _) = stopsTrain;
-
-        return from != null && to != null &&
-          from.expected.isBefore(to.expected);
+        return from != null && to != null && from.expected.isBefore(to.expected);
       })
       .cast<(Stop, Stop, Train)>()
       .sortedBy((stopsTrain) => stopsTrain.$1)
@@ -79,8 +77,8 @@ class Trips extends _$Trips {
     save();
   }
 
-  Future save() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  void save() {
+    final prefs = ref.read(prefsProvider);
 
     prefs.setStringList('from', [state.from.name, state.from.north.id.toString(), state.from.south.id.toString()]);
     prefs.setStringList('to', [state.to.name, state.to.north.id.toString(), state.to.south.id.toString()]);
