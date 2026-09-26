@@ -15,6 +15,7 @@ class Train {
   final String route;
   final ServiceType service;
   final int? location;
+  final bool offset;
   final List<Stop> stops;
 
   Train({
@@ -24,6 +25,7 @@ class Train {
     required this.route,
     required this.service,
     required this.stops,
+    required this.offset,
     this.location,
   });
 

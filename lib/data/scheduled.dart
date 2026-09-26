@@ -7,7 +7,6 @@ import 'package:html/parser.dart' as html;
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-import 'package:tracks/data/station_info.dart';
 import 'package:tracks/data/stations_data.dart';
 
 import 'package:tracks/data/train.dart';
@@ -144,7 +143,7 @@ class Scheduled {
         final trainStops = allStops.where((stop) => stop.train == train.id).toList();
         trainStops.sort((a, b) => a.time.compareTo(b.time));
 
-        final location = getLocation(train.direction, trainStops);
+        final (location, offset) = getLocation(train.direction, trainStops);
 
         return Train(
           id: train.id,
@@ -153,6 +152,7 @@ class Scheduled {
           route: train.route,
           service: train.service,
           location: location,
+          offset: offset,
           stops: List<Stop>.of(
             trainStops.map((stop) {
               return Stop(
@@ -167,43 +167,31 @@ class Scheduled {
     ));
   }
 
-  int? getLocation(String direction, List<ScheduledStop> stops) {
+  (int?, bool) getLocation(String direction, List<ScheduledStop> stops) {
     final now = tzNow();
 
-    final first = stops.first.time;
-    final last = stops.last.time;
-
-    if (first.isAfter(now) || last.isBefore(now)) {
-      return null;
+    if (stops.first.time.isAfter(now) || stops.last.time.isBefore(now)) {
+      return (null, false);
     }
 
-    final nextStop = stops.firstWhere((s) => s.time.isAfter(now));
-    final nextIdx = stops.indexWhere((s) => s.station == nextStop.station);
+    final nextIdx = stops.indexWhere((s) => s.time.isAfter(now));
 
-    final prevIdx = nextIdx > 0 ? nextIdx - 1 : 0;
-    final prevStop = stops[prevIdx];
+    final nextStop = stops[nextIdx];
+    final prevStop = stops[nextIdx - 1];
 
     final idx1 = stations.indexWhere((s) => s.contains(prevStop.station));
     final idx2 = stations.indexWhere((s) => s.contains(nextStop.station));
 
-    StationInfo? station;
-
-    if (prevStop.time.isAfter(now)) {
-      station = null;
-    } else if (idx1 == idx2) {
-      station = stations[idx1];
-    } else if (idx2 == stations.length - 1 && now.isAfter(nextStop.time.add(const Duration(seconds: 20)))) {
-      station = null;
-    } else if (now.isAfter(nextStop.time.subtract(const Duration(seconds: 20)))) {
-      station = stations[idx2];
+    if (now.isAfter(nextStop.time.subtract(const Duration(seconds: 20)))) {
+      return (stations[idx2].side(direction), false);
     } else {
       final dt = nextStop.time.difference(prevStop.time).inMilliseconds;
-      final mix = dt == 0 ? 0.0 : now.difference(prevStop.time).inMilliseconds / dt;
+      final mix = (now.difference(prevStop.time).inMilliseconds / dt).clamp(0.0, 1.0);
 
-      final offset = (mix.clamp(0.0, 1.0) * (idx2 - idx1)).floor();
-      station = stations[idx1 + offset];
+      final offset = mix * (idx2 - idx1);
+      final frac = offset - offset.truncate();
+
+      return (stations[idx1 + offset.truncate()].side(direction), frac.abs() > 0.25);
     }
-
-    return station?.side(direction);
   }
 }

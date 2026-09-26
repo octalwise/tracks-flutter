@@ -31,7 +31,7 @@ class StationsViewState extends ConsumerState<StationsView> {
     super.initState();
 
     refresh = Timer.periodic(
-      const Duration(minutes: 1),
+      const Duration(seconds: 10),
       (_) {
         if (mounted) setState(() {});
       }
@@ -60,28 +60,36 @@ class StationsViewState extends ConsumerState<StationsView> {
         MainBar(title: 'Stations'),
         SliverPadding(
           padding: EdgeInsets.only(top: 4, bottom: 12),
-          sliver: SliverList.builder(
-            itemCount: stations.length,
-            itemBuilder: (context, index) {
-              final station = stations[index];
-
-              final north =
-                station.north.train != null
-                  ? ref.read(trainsProvider.notifier).getTrain(station.north.train!)
-                  : null;
-
-              final south =
-                station.south.train != null
-                  ? ref.read(trainsProvider.notifier).getTrain(station.south.train!)
-                  : null;
-
-              return StationsRow(
-                station: station,
-                north: north,
-                south: south,
-                altService: altService,
-              );
-            },
+          sliver: SliverToBoxAdapter(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final station in stations)
+                      StationsRow(station: station),
+                  ],
+                ),
+                for (final (i, station) in stations.indexed)
+                  if (station.north.train != null || station.south.train != null)
+                    Positioned(
+                      top: (i - 1) * 44 - 48,
+                      left: 0,
+                      right: 0,
+                      height: 92 + 44 * 2,
+                      child: TrainsRow(
+                        north: station.north.train != null
+                          ? ref.read(trainsProvider.notifier).getTrain(station.north.train!)
+                          : null,
+                        south: station.south.train != null
+                          ? ref.read(trainsProvider.notifier).getTrain(station.south.train!)
+                          : null,
+                        altService: altService,
+                      ),
+                    ),
+              ],
+            ),
           ),
         ),
       ],
@@ -92,66 +100,84 @@ class StationsViewState extends ConsumerState<StationsView> {
 class StationsRow extends StatelessWidget {
   final BothStations station;
 
+  const StationsRow({super.key, required this.station});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 44,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 5,
+              child: const Icon(Icons.keyboard_arrow_down_rounded, size: 32),
+            ),
+            Expanded(
+              flex: 12,
+              child: FilledButton.tonal(
+                onPressed: () {
+                  pushView(context, StationView(id: station.north.id));
+                },
+                style: ButtonStyle(
+                  padding: WidgetStateProperty.all(
+                    const EdgeInsets.symmetric(horizontal: 20),
+                  ),
+                ),
+                child: Text(
+                  station.name,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: const Icon(Icons.keyboard_arrow_up_rounded, size: 32),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TrainsRow extends StatelessWidget {
   final Train? north;
   final Train? south;
 
   final bool altService;
 
-  const StationsRow({
+  const TrainsRow({
     super.key,
-    required this.station,
     required this.north,
     required this.south,
     required this.altService,
   });
 
+  Widget slot(Train? train, double dy) {
+    return train != null
+      ? Opacity(
+        opacity: altService ? 0.6 : 1.0,
+        child: Padding(
+          padding: EdgeInsets.only(top: 44 + (train.offset ? 44 * dy : 0)),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: TrainIcon(train: train),
+          ),
+        ),
+      )
+      : SizedBox();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 5,
-            child:
-              south != null
-                ? Opacity(
-                    opacity: altService ? 0.6 : 1.0,
-                    child: TrainIcon(train: south!),
-                  )
-                : const Icon(Icons.keyboard_arrow_down_rounded, size: 32),
-          ),
-
-          Expanded(
-            flex: 12,
-            child: FilledButton.tonal(
-              onPressed: () {
-                pushView(context, StationView(id: station.north.id));
-              },
-              style: ButtonStyle(
-                padding: WidgetStateProperty.all(
-                  const EdgeInsets.symmetric(horizontal: 20),
-                ),
-              ),
-              child: Text(
-                station.name,
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
-          ),
-
-          Expanded(
-            flex: 5,
-            child:
-              north != null
-                ? Opacity(
-                    opacity: altService ? 0.6 : 1.0,
-                    child: TrainIcon(train: north!),
-                  )
-                : const Icon(Icons.keyboard_arrow_up_rounded, size: 32),
-          ),
-        ],
-      ),
+    return Row(
+      children: [
+        Expanded(flex: 5, child: slot(south, 1)),
+        Expanded(flex: 12, child: SizedBox()),
+        Expanded(flex: 5, child: slot(north, -1)),
+      ],
     );
   }
 }

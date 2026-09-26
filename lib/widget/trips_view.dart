@@ -34,7 +34,7 @@ class TripsViewState extends ConsumerState<TripsView> {
     super.initState();
 
     refresh = Timer.periodic(
-      const Duration(minutes: 1),
+      const Duration(seconds: 10),
       (_) {
         if (mounted) setState(() {});
       }

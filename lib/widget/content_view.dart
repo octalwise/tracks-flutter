@@ -71,12 +71,15 @@ class ContentViewState extends ConsumerState<ContentView> {
     tz.initializeTimeZones();
 
     fetch(init: true);
-    lastUpdate = tzNow();
+
+    if (tzNow().hour >= 3) {
+      lastUpdate = tzNow();
+    }
 
     ref.read(alertsProvider.notifier).fetch();
 
     Timer.periodic(
-      Duration(seconds: 90),
+      Duration(seconds: 30),
       (t) => fetch(),
     );
     Timer.periodic(

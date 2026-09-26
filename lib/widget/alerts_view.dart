@@ -16,13 +16,13 @@ class AlertsView extends ConsumerWidget {
       slivers: [
         MainBar(title: 'Alerts'),
         SliverPadding(
-          padding: EdgeInsets.only(top: 4, bottom: 12),
+          padding: EdgeInsets.only(top: 4, bottom: 12, left: 16, right: 16),
           sliver: SliverList.separated(
             itemCount: alerts.length,
             itemBuilder: (context, index) {
               final alert = alerts[index];
 
-              final header = Row(
+              return Row(
                 children: [
                   Padding(
                     padding: EdgeInsets.only(right: 12),
@@ -31,51 +31,22 @@ class AlertsView extends ConsumerWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-                  Expanded(
-                    child: Text(
-                      alert.header,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ]
-              );
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child:
-                  alert.description == null || alert.description!.isEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: header,
-                      )
-                    : Theme(
-                        data: Theme.of(context).copyWith(
-                          dividerColor: Colors.transparent,
-                        ),
-                        child: ExpansionTile(
-                          title: header,
-                          tilePadding: const EdgeInsets.symmetric(horizontal: 8),
-                          childrenPadding: const EdgeInsets.only(bottom: 8),
-                          collapsedShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  alert.description!,
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        alert.header,
+                        style: const TextStyle(fontSize: 16),
                       ),
+                      if (alert.description != null && alert.description!.isNotEmpty)
+                        Text(
+                          alert.description!,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                    ],
+                  ),
+                ],
               );
             },
             separatorBuilder: (context, index) => const Divider(height: 24),
