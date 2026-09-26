@@ -157,16 +157,13 @@ class TrainsRow extends StatelessWidget {
 
   Widget slot(Train? train, double dy) {
     return train != null
-      ? Opacity(
-        opacity: altService ? 0.6 : 1.0,
-        child: Padding(
+      ? Padding(
           padding: EdgeInsets.only(top: 44 + (train.offset ? 44 * dy : 0)),
           child: Align(
             alignment: Alignment.topCenter,
-            child: TrainIcon(train: train),
+            child: TrainIcon(train: train, altService: altService),
           ),
-        ),
-      )
+        )
       : SizedBox();
   }
 
@@ -184,12 +181,23 @@ class TrainsRow extends StatelessWidget {
 
 class TrainIcon extends StatelessWidget {
   final Train train;
+  final bool altService;
 
-  const TrainIcon({super.key, required this.train});
+  const TrainIcon({
+    super.key,
+    required this.train,
+    required this.altService,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final (foreground, background) = train.routeColor(context);
+    var (foreground, background) = train.routeColor(context);
+
+    if (altService) {
+      final surface = Theme.of(context).colorScheme.surface;
+      foreground = Color.alphaBlend(foreground.withValues(alpha: 0.6), surface);
+      background = Color.alphaBlend(background.withValues(alpha: 0.6), surface);
+    }
 
     return Center(
       child: IconButton.filled(
