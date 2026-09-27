@@ -54,11 +54,11 @@ class ContentViewState extends ConsumerState<ContentView> {
       data = trainsData;
       holidays = holidaysData;
       scheduled = await Scheduled.parse(scheduleData, holidaysData);
-
-      ref.read(serviceProvider.notifier).load(holidaysData);
     } else {
       data = await Trains.data();
     }
+
+    ref.read(serviceProvider.notifier).load(holidays!);
 
     final trains = await scheduled.fetch();
     ref.read(trainsProvider.notifier).parse(data, trains);
