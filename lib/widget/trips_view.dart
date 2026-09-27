@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,25 +24,6 @@ class TripsView extends ConsumerStatefulWidget {
 
 class TripsViewState extends ConsumerState<TripsView> {
   bool? forceShow;
-  Timer? refresh;
-
-  @override
-  void initState() {
-    super.initState();
-
-    refresh = Timer.periodic(
-      const Duration(seconds: 10),
-      (_) {
-        if (mounted) setState(() {});
-      }
-    );
-  }
-
-  @override
-  void dispose() {
-    refresh?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

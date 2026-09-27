@@ -1,7 +1,7 @@
 import 'package:tracks/data/station.dart';
 
 class BothStations {
-  final String  name;
+  final String name;
   final Station north;
   final Station south;
 

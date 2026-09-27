@@ -7,8 +7,6 @@ import 'package:html/parser.dart' as html;
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-import 'package:tracks/data/stations_data.dart';
-
 import 'package:tracks/data/train.dart';
 import 'package:tracks/data/stop.dart';
 import 'package:tracks/data/holidays.dart';
@@ -143,16 +141,12 @@ class Scheduled {
         final trainStops = allStops.where((stop) => stop.train == train.id).toList();
         trainStops.sort((a, b) => a.time.compareTo(b.time));
 
-        final (location, offset) = getLocation(train.direction, trainStops);
-
-        return Train(
+        return Train.located(
           id: train.id,
           live: false,
           direction: train.direction,
           route: train.route,
           service: train.service,
-          location: location,
-          offset: offset,
           stops: List<Stop>.of(
             trainStops.map((stop) {
               return Stop(
@@ -165,33 +159,5 @@ class Scheduled {
         );
       },
     ));
-  }
-
-  (int?, bool) getLocation(String direction, List<ScheduledStop> stops) {
-    final now = tzNow();
-
-    if (stops.first.time.isAfter(now) || stops.last.time.isBefore(now)) {
-      return (null, false);
-    }
-
-    final nextIdx = stops.indexWhere((s) => s.time.isAfter(now));
-
-    final nextStop = stops[nextIdx];
-    final prevStop = stops[nextIdx - 1];
-
-    final idx1 = stations.indexWhere((s) => s.contains(prevStop.station));
-    final idx2 = stations.indexWhere((s) => s.contains(nextStop.station));
-
-    if (now.isAfter(nextStop.time.subtract(const Duration(seconds: 20)))) {
-      return (stations[idx2].side(direction), false);
-    } else {
-      final dt = nextStop.time.difference(prevStop.time).inMilliseconds;
-      final mix = (now.difference(prevStop.time).inMilliseconds / dt).clamp(0.0, 1.0);
-
-      final offset = mix * (idx2 - idx1);
-      final frac = offset - offset.truncate();
-
-      return (stations[idx1 + offset.truncate()].side(direction), frac.abs() > 0.25);
-    }
   }
 }

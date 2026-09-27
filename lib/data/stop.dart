@@ -24,8 +24,6 @@ class Stop implements Comparable<Stop> {
   int compareTo(Stop other) {
     return expected.compareTo(other.expected);
   }
-
-  Map<String, dynamic> toJson() => _$StopToJson(this);
 }
 
 class UnixConverter implements JsonConverter<DateTime, int> {

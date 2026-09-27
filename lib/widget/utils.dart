@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-import 'package:tracks/widget/content_view.dart';
 import 'package:tracks/widget/panes.dart';
 
 String formatTime(BuildContext context, DateTime time) {

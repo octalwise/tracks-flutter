@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,8 +24,6 @@ class StationViewState extends ConsumerState<StationView> {
   var direction = 'N';
   var showPast = false;
 
-  Timer? refresh;
-
   @override
   void initState() {
     super.initState();
@@ -43,19 +40,6 @@ class StationViewState extends ConsumerState<StationView> {
     if (!nonPast) {
       showPast = true;
     }
-
-    refresh = Timer.periodic(
-      const Duration(seconds: 10),
-      (_) {
-        if (mounted) setState(() {});
-      }
-    );
-  }
-
-  @override
-  void dispose() {
-    refresh?.cancel();
-    super.dispose();
   }
 
   @override

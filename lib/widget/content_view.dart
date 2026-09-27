@@ -83,6 +83,10 @@ class ContentViewState extends ConsumerState<ContentView> {
     ref.read(alertsProvider.notifier).fetch();
 
     Timer.periodic(
+      Duration(seconds: 10),
+      (t) => ref.read(trainsProvider.notifier).refresh(),
+    );
+    Timer.periodic(
       Duration(seconds: 30),
       (t) => fetch(),
     );

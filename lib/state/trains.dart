@@ -41,6 +41,14 @@ class Trains extends _$Trains {
     }
   }
 
+  void refresh() {
+    for (final train in state) {
+      train.refresh();
+    }
+
+    state = [...state];
+  }
+
   List<Train> getTrains() {
     return state.where((train) => ref.read(serviceProvider.notifier).isService(train.service)).toList();
   }

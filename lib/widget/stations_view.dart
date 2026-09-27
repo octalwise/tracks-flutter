@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,36 +13,11 @@ import 'package:tracks/widget/train_view.dart';
 import 'package:tracks/widget/station_view.dart';
 import 'package:tracks/widget/utils.dart';
 
-class StationsView extends ConsumerStatefulWidget {
+class StationsView extends ConsumerWidget {
   const StationsView({super.key});
 
   @override
-  ConsumerState<StationsView> createState() => StationsViewState();
-}
-
-class StationsViewState extends ConsumerState<StationsView> {
-  Timer? refresh;
-
-  @override
-  void initState() {
-    super.initState();
-
-    refresh = Timer.periodic(
-      const Duration(seconds: 10),
-      (_) {
-        if (mounted) setState(() {});
-      }
-    );
-  }
-
-  @override
-  void dispose() {
-    refresh?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final stations = ref.watch(stationsProvider);
     final altService = ref.read(serviceProvider.notifier).alt();
 

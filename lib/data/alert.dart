@@ -13,6 +13,4 @@ class Alert {
   });
 
   factory Alert.fromJson(Map<String, dynamic> json) => _$AlertFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AlertToJson(this);
 }

@@ -16,8 +16,6 @@ class StationInfo {
 
   factory StationInfo.fromJson(Map<String, dynamic> json) => _$StationInfoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$StationInfoToJson(this);
-
   bool contains(int id) {
     return id == north || id == south;
   }
