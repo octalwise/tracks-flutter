@@ -51,6 +51,9 @@ class Home extends ConsumerWidget {
                 ),
               ),
             ),
+            checkboxTheme: const CheckboxThemeData(
+              overlayColor: WidgetStatePropertyAll(Colors.transparent),
+            ),
             visualDensity: VisualDensity.standard,
           ),
           darkTheme: ThemeData(
@@ -76,6 +79,9 @@ class Home extends ConsumerWidget {
                   ),
                 ),
               ),
+            ),
+            checkboxTheme: const CheckboxThemeData(
+              overlayColor: WidgetStatePropertyAll(Colors.transparent),
             ),
             visualDensity: VisualDensity.standard,
           ),
