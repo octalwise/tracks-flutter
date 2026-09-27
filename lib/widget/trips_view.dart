@@ -27,8 +27,6 @@ class TripsViewState extends ConsumerState<TripsView> {
   bool? forceShow;
   Timer? refresh;
 
-  late FABController controller;
-
   @override
   void initState() {
     super.initState();
@@ -39,8 +37,6 @@ class TripsViewState extends ConsumerState<TripsView> {
         if (mounted) setState(() {});
       }
     );
-
-    controller = FABController(context);
   }
 
   @override
@@ -80,7 +76,6 @@ class TripsViewState extends ConsumerState<TripsView> {
     ref.watch(serviceProvider);
 
     return CustomScrollView(
-      controller: controller,
       slivers: [
         MainBar(title: 'Trips'),
         SliverToBoxAdapter(

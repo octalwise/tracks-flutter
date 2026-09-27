@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -33,6 +34,9 @@ class ContentViewState extends ConsumerState<ContentView> {
 
   var currentTab = 1;
   var showFAB = true;
+
+  var refreshKey = UniqueKey();
+  final stackKey = GlobalKey();
 
   Future fetch({bool? init}) async {
     String data;
@@ -125,16 +129,28 @@ class ContentViewState extends ConsumerState<ContentView> {
 
     final wide = MediaQuery.of(context).size.width >= 700;
 
-    final body = NotificationListener<ShowNotification>(
+    final body = NotificationListener<UserScrollNotification>(
       onNotification: (n) {
-        if (showFAB != n.show) {
-          setState(() => showFAB = n.show);
+        if (n.direction == ScrollDirection.idle) return false;
+
+        final show = n.direction == ScrollDirection.forward;
+        final cancel =
+          n.direction == ScrollDirection.reverse && n.metrics.extentBefore == 0;
+
+        if (show != showFAB || cancel) {
+          setState(() {
+            showFAB = show;
+            if (cancel) refreshKey = UniqueKey();
+          });
         }
-        return true;
+
+        return false;
       },
       child: RefreshIndicator(
+        key: refreshKey,
         onRefresh: fetch,
         child: IndexedStack(
+          key: stackKey,
           index: currentTab,
           children: const [
             TripsView(),
@@ -210,9 +226,4 @@ class ContentViewState extends ConsumerState<ContentView> {
       ),
     );
   }
-}
-
-class ShowNotification extends Notification {
-  final bool show;
-  ShowNotification(this.show);
 }

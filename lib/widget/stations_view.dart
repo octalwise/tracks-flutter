@@ -24,8 +24,6 @@ class StationsView extends ConsumerStatefulWidget {
 class StationsViewState extends ConsumerState<StationsView> {
   Timer? refresh;
 
-  late FABController controller;
-
   @override
   void initState() {
     super.initState();
@@ -36,8 +34,6 @@ class StationsViewState extends ConsumerState<StationsView> {
         if (mounted) setState(() {});
       }
     );
-
-    controller = FABController(context);
   }
 
   @override
@@ -55,7 +51,6 @@ class StationsViewState extends ConsumerState<StationsView> {
     ref.watch(serviceProvider);
 
     return CustomScrollView(
-      controller: controller,
       slivers: [
         MainBar(title: 'Stations'),
         SliverPadding(

@@ -30,16 +30,3 @@ void pushView(BuildContext context, Widget widget) {
 tz.TZDateTime tzNow() {
   return tz.TZDateTime.now(tz.getLocation('America/Los_Angeles'));
 }
-
-class FABController extends ScrollController {
-  FABController(BuildContext context) {
-    addListener(() {
-      final dir = position.userScrollDirection;
-      final show = dir == ScrollDirection.forward;
-
-      if (dir != ScrollDirection.idle) {
-        ShowNotification(show).dispatch(context);
-      }
-    });
-  }
-}
