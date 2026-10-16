@@ -31,20 +31,21 @@ class AlertsView extends ConsumerWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        alert.header,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      if (alert.description != null && alert.description!.isNotEmpty)
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          alert.description!,
+                          alert.header,
                           style: const TextStyle(fontSize: 16),
                         ),
-                    ],
+                        if (alert.description != null && alert.description!.isNotEmpty)
+                          Text(
+                            alert.description!,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                      ],
+                    ),
                   ),
                 ],
               );
