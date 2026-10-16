@@ -1,6 +1,6 @@
 name: tracks
 description: Flutter client for Tracks
-version: 1.0.4+6
+version: 1.0.5+7
 publish_to: none
 
 environment:
